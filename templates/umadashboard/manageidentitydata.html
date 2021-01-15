@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+{% block title %}Identity Manager{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="panel panel-default">
+    <div class="heading">
+      <span class="col-md-5 text-left"><h4>&nbsp;&nbsp;Identity Data in Storage</h4></span>
+    </div>
+    <div class="clear-fix">&nbsp;</div>
+
+    {% if identities.uniqueProviders|length == 0 %}
+      
+      <div class="tex-center">
+        <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;There is no identity loaded yet</h5>
+        <br>
+      </div>
+       
+      {% else %}
+
+      <ul class="nav nav-tabs" role="tablist" id="providertablist">
+
+        {% for provider in identities.uniqueProviders %}
+        
+          {% if provider == 'eIDAS' %}
+
+            <li role="presentation" class="tab-pane">
+              <a href="#eIDAS" aria-controls="eIDAS" role="tab" data-toggle="tab">eIDAS</a>
+            </li>
+
+          {% endif %}
+
+          {% if provider == 'eduGAIN' %}
+
+            <li role="presentation" class="tab-pane">
+              <a href="#eduGAIN" aria-controls="eduGAIN" role="tab" data-toggle="tab">eduGAIN</a>
+            </li>
+
+          {% endif %}
+
+          {% if provider == 'derivedID' %}
+
+            <li role="presentation" class="tab-pane">
+              <a href="#derivedID" aria-controls="derivedID" role="tab" data-toggle="tab">Derived ID</a>
+            </li>
+
+          {% endif %}          
+
+          {% if provider == 'linkedID' %}
+
+            <li role="presentation" class="tab-pane">
+              <a href="#linkedID" aria-controls="linkedID" role="tab" data-toggle="tab">Linked ID</a>
+            </li>
+
+          {% endif %}   
+
+        {% endfor %}
+
+      </ul>
+
+      <div class="tab-content panel-body">
+
+        <div role="tabpanel" class="tab-pane" id="eIDAS">
+
+          <div class="clear-fix">&nbsp;</div>
+
+          <!-- INI {{identity.provider}} eIDAS -->
+          <div class="list-group">
+
+            {% if identities %}
+
+              {% for identity in identities.identitiesList %}
+              
+                {% if identity.provider == 'eIDAS' %}
+
+                  <span class="list-group-item vista" visibility="visible">
+                    
+                    <h4 class="list-group-item-heading">
+
+                      <strong class="titulo">ID: {{identity.id}} &nbsp; </strong>
+
+                      <button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
+                      Delete</button>
+                      
+                    </h4>                 
+                    
+                    <span class="list-group-item-text"><br>
+      
+                      <p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
+                      
+                      {% for element in identity.attributes  %}
+                        
+                        <p><b>{{element.friendlyName}}:&nbsp;</b>
+
+                            {% for value in element.values %}
+
+                                <b>{{value}}</b>&nbsp;&nbsp;
+                              
+                            {% endfor %}
+
+                        </p>
+                      
+                      {% endfor %}
+
+                    </span>
+
+                  </span>
+                          
+                {% endif %}
+
+              {% endfor %}
+
+            {% endif %}
+
+          </div>
+          <!-- FIN {{identity.provider}} eIDAS -->
+
+        </div> 
+
+        <div role="tabpanel" class="tab-pane" id="eduGAIN">
+          
+          <div class="clear-fix">&nbsp;</div> 
+
+          <!-- INI {{identity.provider}} eduGAIN -->
+          <div class="list-group">
+
+            {% if identities %}
+
+              {% for identity in identities.identitiesList %}
+              
+                {% if identity.provider == 'eduGAIN' %}
+
+                  <span class="list-group-item vista" visibility="visible">          
+                    
+                    <h4 class="list-group-item-heading">
+
+                      <strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+
+                      <button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
+                      Delete</button>
+                      
+                    </h4>             
+                    
+                    <span class="list-group-item-text"><br>
+      
+                      <p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
+                      
+                      {% for element in identity.attributes %}
+                                
+                          <p><b>{{element.friendlyName}}:</b>&nbsp;
+
+                              {% for value in element.values %}
+
+                                  <b>{{value}}&nbsp;&nbsp;</b>
+                                
+                              {% endfor %}
+
+                          </p>                        
+                    
+                      {% endfor %}
+
+                    </span>
+
+                  </span>                
+            
+                {% endif %}
+            
+              {% endfor %}
+
+            {% endif %}
+
+          </div>
+          <!-- FIN {{identity.provider}} eduGAIN -->
+
+        </div>    
+
+        <div role="tabpanel" class="tab-pane" id="derivedID">
+          
+          <div class="clear-fix">&nbsp;</div> 
+
+          <!-- INI {{identity.provider}} derivedID -->
+          <div class="list-group">
+
+            {% if identities %}
+
+              {% for identity in identities.identitiesList %}
+              
+                {% if identity.provider == 'derivedID' %}
+
+                  <span class="list-group-item vista" visibility="visible">          
+                    
+                    <h4 class="list-group-item-heading">
+
+                      <strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+
+                      <button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
+                      Delete</button>
+                      
+                    </h4>             
+                    
+                    <span class="list-group-item-text"><br>
+      
+                      <p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
+                      
+                      {% for element in identity.attributes %}
+                                
+                          <p><b>{{element.friendlyName}}:</b>&nbsp;
+
+                            {% for value in element.values %}
+
+                                <b>{{value}}&nbsp;&nbsp;</b>
+                              
+                            {% endfor %}
+
+                          </p>                        
+                    
+                      {% endfor %}
+
+                    </span>
+
+                  </span>                
+            
+                {% endif %}
+            
+              {% endfor %}
+
+            {% endif %}
+
+          </div>
+          <!-- FIN {{identity.provider}} derivedID -->
+
+        </div>   
+
+        <div role="tabpanel" class="tab-pane" id="linkedID">
+          
+          <div class="clear-fix">&nbsp;</div> 
+
+          <!-- INI {{identity.provider}} linkedID / null -->
+          <div class="list-group">
+
+            {% if identities %}
+
+              {% for identity in identities.identitiesList %}
+              
+                {% if identity.provider == 'linkedID' or identity.provider == None %}
+
+                  <span class="list-group-item vista" visibility="visible">          
+                    
+                    <h4 class="list-group-item-heading">
+
+                      <strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+
+                      <button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
+                      Delete</button>
+                      
+                    </h4>             
+                    
+                    <span class="list-group-item-text"><br>
+      
+                      <p><i>Issued on {{identity.issued}}  with <b>LLoA: {{identity.lloa}}</b></i></p><br>
+
+                      <p><b>Dataset A:</b></p>
+
+                          <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetA.id}}</b></p>
+                          <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetA.loa}}</b></p>
+                      
+                          {% for element in identity.datasetA.attributes %}
+                                    
+                              <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                
+                                  <b>{{element.friendlyName}}:&nbsp;</b>
+
+                                  {% for value in element.values %}
+
+                                      <b>{{value}}&nbsp;&nbsp;</b>
+                                    
+                                  {% endfor %}
+
+                              </p>                               
+                        
+                          {% endfor %}
+
+                      <p></p>
+
+                      <p><b>Dataset B:</b></p>
+
+                          <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetB.id}}</b></p>
+                          <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetB.loa}}</b></p>
+
+                          {% for element in identity.datasetB.attributes %}
+                                    
+                              <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    
+                                  <b>{{element.friendlyName}}:&nbsp;</b>
+
+                                  {% for value in element.values %}
+
+                                      <b>{{value}}&nbsp;&nbsp;</b>
+                                    
+                                  {% endfor %}
+
+                              </p>                               
+                        
+                          {% endfor %}                      
+
+                    </span>
+
+                  </span>                
+            
+                {% endif %}
+            
+              {% endfor %}
+
+            {% endif %}
+
+          </div>
+          <!-- FIN {{identity.provider}} linkedID / null -->
+
+        </div> 
+
+      </div>
+
+    {% endif %}  
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript_pie %}
+   {{block.super}}
+   <script nonce="{{settings.VARIABLE_NONCE_CSP}}">
+
+      $(document).ready(function() {
+         
+            // This function makes the first tab of the loaded identities active
+        if (document.querySelectorAll('ul')[0].childElementCount > 0) {
+          id = document.querySelectorAll('ul')[0].children[0].children[0].attributes[1].value;
+          $("[aria-controls='"+id+"']").trigger('click');
+        }
+
+       });
+
+    </script>
+{% endblock %}

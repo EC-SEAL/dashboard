@@ -1,0 +1,71 @@
+{% load staticfiles %}
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SEAL - {% block title %}DASHBOARD{% endblock %}</title>
+    <meta http-equiv="Referrer-Policy" content="no-referrer, strict-origin-when-cross-origin">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'ico/favicon.png' %}">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+    {% comment %}<link href="{% static 'css/bootstrap-select.min.css' %}" rel="stylesheet" media="screen">{% endcomment %}
+    <link href="{% static 'css/uma.css' %}" rel="stylesheet" media="screen">
+    
+    {% block javascript %}{% endblock %}
+    {% block css %}{% endblock %}
+
+  </head>
+  <body>
+  
+   <div class="container">
+
+      <!-- Static navbar -->
+      <div class="navbar navbar-default">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="https://project-seal.eu/about" target="_blank"><span><img src="{% static "images/logo_seal_superpequeno.png" %}" alt="SEAL DASHBOARD" /></span> WEB DASHBOARD</a>
+        </div>
+      </div>
+    </div> <!-- /container -->
+
+    <br>
+    
+    {% block content %}
+    {% endblock %}
+    
+    <div id="footer">
+      <div>
+        <div class="navbar-inner">
+          <div class="container">
+	          <div class="text-muted text-center">
+              <br>
+              <br>
+              <a href="https://ec.europa.eu/inea/en/connecting-europe-facility/cef-telecom/2018-eu-ia-0024" target="_blank"><span><img src="{% static "images/eu.png" %}" href="https://ec.europa.eu/inea/en/connecting-europe-facility/cef-telecom/2018-eu-ia-0024" alt="INEA/CEF/ICT/A2018/1633170" /></span></a>
+              <p><b>
+                Co-financed by the Connecting Europe Facility (CEF)<br>
+                of the European Union.&nbsp;Grant Agreement No<br>
+                INEA/CEF/ICT/A2018/1633170<br>
+                <a href="https://project-seal.eu/node/141" target="_blank">Privacy policy</a>
+              </b>
+              </p>
+              <br>
+	          </div>
+          </div>
+          <div class="container">
+	          <div class="text-muted text-center"><br />Universidad de Málaga&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Avda. Cervantes, 2, 29071 MÁLAGA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tel. 952 13 10 00 <a href="http://dj.uma.es/sicau/">contacta</a><br />
+© {% now "Y" %} Servicio Central de Informática
+	          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script nonce="{{settings.VARIABLE_NONCE_CSP}}" src="{% static "js/jquery.js" %}"></script>
+    <script nonce="{{settings.VARIABLE_NONCE_CSP}}" src="{% static "js/bootstrap.min.js" %}"></script>
+    {% comment %}<script nonce="{{settings.VARIABLE_NONCE_CSP}}" src="{% static "js/bootstrap-select.min.js" %}"></script>{% endcomment %}
+
+
+    {% block javascript_pie %}{% endblock %}
+    {% if not settings.DEBUG %}
+      <!-- scripts codes if not in DEBUG mode -->
+    {% endif %}
+  </body>
+</html>

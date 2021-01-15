@@ -1,0 +1,541 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+{% block title %}Access Identity Manager{% endblock %}
+
+
+{% block content %}
+
+
+<!-- Modal window for More Info -->
+<div class="modal fade" tabindex="-1" role="dialog" id="text-more-info-modal">
+    <div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">More information</h4>
+			</div>
+			<div class="modal-body" id="modal-body-id" >
+
+				<div class="row">
+					<p class="col-4 col-xs-1"></p>
+					<p class="col-4 col-xs-10">	
+						This page allows you to access SEAL dashboard, which is the main interface for using SEAL services. 
+						You could either access using PDS or SSI.<br><br>
+						PDS is a Personal DataStore file that you could save locally or in a cloud service of your 
+						preference, in it there are stored your future identities and other personal data.<br><br>
+						SSI is an Ethereum Blockchain-based access method that uses ledger technologies to authenticate 
+						yourself over a wallet of your property, like uPort Wallet.
+					</p>
+					<p class="col-4 col-xs-1"></p>
+				</div>				
+
+			</div>
+		</div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal for More Info -->
+
+
+
+<!-- Modal window for PDS -->
+<div class="modal fade" tabindex="-1" role="dialog" id="windowLocalPDS">
+    <div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Load PDS</h4>
+			</div>
+			<div class="modal-body" id="modal-body-id" >
+
+				<div id="cloud-select-buttons" style="display: none;">
+					<br><br>
+					<div  class="form-inline text-center">
+						<div class="form-group mb-2">
+							<button type="button" class="btn btn-primary mb-2" onclick="funcCloudPDS('googleDrive');">Google Drive</button>
+						</div>
+						<div class="form-group mb-2">
+							<button type="button" class="btn btn-primary mb-2" onclick="funcCloudPDS('oneDrive');">Microsoft OneDrive</button>
+						</div>
+					</div>
+					<br>
+					<div class="form-group row text-center" style="color: red;"> 
+						<p id="cloud-button-error" style="display: none;">The selected method is not available...</p>
+					</div>
+				</div>
+
+				<div id="local-select-buttons" style="display: none;">
+					<br><br>
+					<div  class="form-inline text-center">
+						<div class="form-group mb-2">
+							<button type="button" class="btn btn-primary mb-2" onclick="funcLocalPDS('Browser');">Local File</button>
+						</div>
+						<div class="form-group mb-2">
+							<button type="button" class="btn btn-primary mb-2" onclick="funcLocalPDS('Mobile');">Continue on mobile</button>
+						</div>
+					</div>
+					<br>
+					<div class="form-group row text-center" style="color: red;"> 
+						<p id="local-button-error" style="display: none;">The selected method is not available...</p>
+					</div>
+				</div>
+
+			</div>
+		</div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal for PDS -->
+
+
+<div class="container">
+
+	<div id="more-information-logic">
+		<style>
+			.when-hover:hover {
+				background-color: rgb(217,237,247);
+			}
+		</style>
+
+		<a href="javascript:void(0)" onclick="showMoreInfo();" style="text-decoration: none;">
+			<h3 class="panel panel-info panel-heading panel-title when-hover" id="text-more-info-title" style="color: #317099;">More information <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -1 24 24" width="10" height="10"><path fill="#317099" d="M13 7.5a1 1 0 11-2 0 1 1 0 012 0zm-3 3.75a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v4.25h.75a.75.75 0 010 1.5h-3a.75.75 0 010-1.5h.75V12h-.75a.75.75 0 01-.75-.75z"></path><path fill="#317099" fill-rule="evenodd" d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11 11-4.925 11-11S18.075 1 12 1zM2.5 12a9.5 9.5 0 1119 0 9.5 9.5 0 01-19 0z"></path></svg> </h3>
+		</a>
+		<br>
+		<div class="panel panel-info" id="text-more-info-desktop" style="display:none">
+
+			<div class="row">
+				<p class="col-4 col-xs-1"></p>
+				<p class="col-4 col-xs-10">	
+					<br>
+					This page allows you to access SEAL dashboard, which is the main interface for using SEAL services. 
+					You could either access using PDS or SSI.<br><br>
+					PDS is a Personal DataStore file that you could save locally or in a cloud service of your 
+					preference, in it there are stored your future identities and other personal data.<br><br>
+					SSI is an Ethereum Blockchain-based access method that uses ledger technologies to authenticate 
+					yourself over a wallet of your property, like uPort Wallet.
+					<br><br>
+				</p>
+				<p class="col-4 col-xs-1"></p>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<h3 class="panel-title">Access</h3>
+		</div>
+		<div class="panel-body">
+			{% if access_methods %}
+
+				{% for element in access_methods %}
+					<div class="list-group" id="parent-{{element.name}}">	
+
+						{% if element.name == 'PDS' %}
+						<a href="javascript:void(0)" class="list-group-item" onclick="$('#childSSI-2').hide(); $('#childPDS-{{forloop.counter}}').toggle();">
+						{% endif %}
+						
+						{% if element.name == 'SSI' %}
+						<a href="javascript:void(0)" class="list-group-item" onclick="$('#childPDS-1').hide(); $('#childSSI-{{forloop.counter}}').toggle();">
+						{% endif %}
+
+							<h4 class="list-group-item-heading">{{element.name}}</h4>
+							<p>{{element.description}}</p>
+
+						</a>
+
+
+						{% if element.name == 'PDS' %}
+							<div class="list-group" id="childPDS-{{forloop.counter}}" style="display:none">
+								<a href="javascript:void(0)" class="list-group-item" onclick="$('#childPDS-{{forloop.counter}}').hide(); funcVentanaModalPDS('LOCAL'); " >
+									<h4 class="list-group-item-heading">Local PDS</h4>
+								</a>
+								<a href="javascript:void(0)" class="list-group-item" onclick="$('#childPDS-{{forloop.counter}}').hide(); funcVentanaModalPDS('CLOUD'); ">
+									<h4 class="list-group-item-heading">Cloud PDS</h4>
+								</a>
+							</div>
+						{% endif %}
+
+						{% if element.name == 'SSI' %}
+							<div class="list-group" id="childSSI-{{forloop.counter}}" style="display:none">
+								<a href="javascript:void(0)" class="list-group-item" onclick="$('#childSSI-{{forloop.counter}}').hide(); funcSSI('uPort'); " >
+									<h4 class="list-group-item-heading">uPort</h4>
+								</a>
+							</div>
+						{% endif %}
+						
+					</div>
+				{% endfor %}
+
+			{% else %}
+
+				<div class="text-center">
+					<br>
+					<br>
+					<h5>There is no access method avaliable for now, please retry in a few moments.</h5>
+					<br>
+					<br>
+				</div>
+
+			{% endif %}
+
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript_pie %}
+  	{{block.super}}
+	<script src="{% static 'js/locales/mobile-detect.js' %}"></script>
+
+	<script nonce="{{settings.VARIABLE_NONCE_CSP}}">
+   		$(document).ready(function() {
+			if(window.location.href[window.location.href.length-1] != '/'){
+				window.location.href = window.location.href + '/'
+			} else {
+				//Alert for informing the user that the functions methods need to use pop-up's
+				alert("Information: This website needs pop-ups in order to work properly.\nAccepting this message you are confirming you have read the current information.");
+			}
+
+			// if(sessionStorage.getItem('data') != null){
+			// 	sessionStorage.removeItem('data');
+			// 	alert('You have been redirected because your session has expired, please try to authenticate again.');
+			// }
+		});
+
+	    // Global variables
+		window.globalInterval;
+		window.watchDogInterval;
+		window.currentWindow;
+
+		window.intervalTimerValue = 1500;   // 3 * 1000  = 1,5 * 1 sec(ms) = 1,5 sec
+		window.watchdogTimerValue = 300000; // 5 * 60000 = 5 * 1 min(ms) = 5 min
+
+
+		function showMoreInfo() {
+
+			var md = new MobileDetect(window.navigator.userAgent);
+
+			if (md.mobile() != null) {
+				$('#text-more-info-modal').modal('show');
+			} else {
+				$('#text-more-info-desktop').toggle();
+			}
+			
+		}	// showMoreInfo
+
+
+		function funcVentanaModalPDS(mode) {
+
+			if (mode == 'LOCAL') {
+ 
+				$('#modal-body-id').attr('style', "height: 150px;");
+				$('#cloud-select-buttons').attr('style', "display: none;"); 
+
+				$('#local-select-buttons').attr('style', "display: block;");
+				$('#local-button-error').attr('style', "display: none;");
+
+				$('#windowLocalPDS').modal('show');
+
+			} else if (mode == 'CLOUD') {
+
+				$('#modal-body-id').attr('style', "height: 150px;");
+				$('#local-select-buttons').attr('style', "display: none;");
+
+				$('#cloud-select-buttons').attr('style', "display: block;");
+				$('#cloud-button-error').attr('style', "display: none;");
+
+				$('#windowLocalPDS').modal('show');
+
+			} else { // Any other option, error
+				alert('ERROR: Mode not found');
+				
+			}
+
+	    }	// funcVentanaModalPDS
+
+	    // Only for testing
+	    function getSessionId() {
+
+			getSessionId_URL = window.location.href + 'testGetSessionId=' + sessionStorage.getItem('data');
+
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.onreadystatechange = function() {
+				
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+					console.log('gSI-001: sessionId = ' + xmlHttp.responseText);
+
+				} else if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
+					console.log('gSI-002: sessionId not retrieved');
+				}
+
+			}	// onreadystatechange
+
+			xmlHttp.open("GET", getSessionId_URL, true); // true for asynchronous
+			xmlHttp.send();
+
+		}	// getSessionId
+
+
+	   	function validateFlag(url) {
+
+			if (window.currentWindow.closed) {
+				window.clearInterval(window.globalInterval)
+				window.clearInterval(window.watchDogInterval)
+			}
+
+			urlTokenFlag = window.location.href + 'tokenFlag=' + sessionStorage.getItem('data');
+
+			var xmlHttp = new XMLHttpRequest();
+
+			xmlHttp.onreadystatechange = function() {
+
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 206) {
+
+					if (window.currentWindow.closed) {
+						console.log('vF-001-F');
+						sessionStorage.removeItem('data');
+					} else {
+						console.log('vF-001');
+					}
+
+
+				} else if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+					console.log('vF-002');
+					window.clearInterval(window.globalInterval);
+					window.clearInterval(window.watchDogInterval);
+					window.currentWindow.close();
+
+					//Previous alert PopUps.
+
+					location.href = url;
+
+					// Only for testing
+					getSessionId();
+
+				} else if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
+					console.log('vF-003');
+					window.clearInterval(window.globalInterval);
+					window.clearInterval(window.watchDogInterval);
+					window.currentWindow.close();
+
+					sessionStorage.removeItem('data');
+
+					//Alert to inform the user that something has happened during the expected reception of the callback.
+					alert("Sorry, an error has occurred during your attempt to access. Please, try again.");
+					
+				} else if (xmlHttp.readyState == 4 && xmlHttp.status == 500) {
+					console.log('vF-004');
+					window.clearInterval(window.globalInterval);
+					window.clearInterval(window.watchDogInterval);
+					window.currentWindow.close();
+
+					sessionStorage.removeItem('data');
+
+					location.reload(true);
+				}	
+
+			}	// onreadystatechange
+
+			xmlHttp.open("GET", urlTokenFlag, true); // true for asynchronous
+			xmlHttp.send();
+
+		}	// validateFlag
+
+
+		function displaySubwindowGET(url) {
+			window.currentWindow = window.open(url, "connectWindow", "width=700,height=700,menubar=0,location=yes,resizable=0,scrollbars=0,status=1");
+		}
+
+
+		function funcLocalPDS(moduleID) {
+
+			// Variable reset within the range 
+			if (window.globalInterval) {
+				window.clearInterval(window.globalInterval)
+				window.clearInterval(window.watchDogInterval);
+			}
+
+			if (window.currentWindow) {
+				window.currentWindow.close()
+			}
+
+			var url = window.location.href + 'loadLocalPDS?moduleID=' + moduleID;
+
+			var xmlHttp = new XMLHttpRequest();
+
+            xmlHttp.onreadystatechange = function() { 
+
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+
+					var params = xmlHttp.responseText.split("&");
+					var UUID = params[0];
+					var address = params[1];
+					var msToken = params[2];				
+	
+					sessionStorage.setItem('data', UUID);
+
+					var url_UI_uporto = address + '?msToken=' + msToken;
+	
+					$('#windowLocalPDS').modal('hide');
+
+					window.globalInterval = window.setInterval(function() { validateFlag("identitymanager") }, window.intervalTimerValue)
+					window.watchDogInterval = window.setInterval(function() { 
+						if (window.currentWindow) {
+							window.currentWindow.close()
+						}
+						window.clearInterval(window.globalInterval)
+						window.clearInterval(window.watchDogInterval)
+						sessionStorage.removeItem('data');
+						
+						alert("Timeout has been reached, please try to access again.")
+					}, window.watchdogTimerValue)
+	
+					displaySubwindowGET(url_UI_uporto);
+	
+				} // == 200
+
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
+
+					// The message error is displayed
+					$('#local-button-error').attr('style', "display: block;");
+
+					// The message error is displayed for 2 seconds and hidden
+					setTimeout(function(){ $('#local-button-error').attr('style', "display: none;"); }, 2000);
+				
+				}
+
+            }	// onreadystatechange
+            
+            xmlHttp.open("GET", url, true); // true for asynchronous
+            xmlHttp.send();
+
+		}	// funcLocalPDS
+		
+
+		function funcCloudPDS(moduleID) {
+
+			if (window.globalInterval) {
+				window.clearInterval(window.globalInterval)
+				window.clearInterval(window.watchDogInterval)
+			}
+
+			if (window.currentWindow) {
+				window.currentWindow.close()
+			}
+			
+			var url = window.location.href + 'loadCloudPDS?moduleID='+moduleID;
+
+			var xmlHttp = new XMLHttpRequest();
+
+			xmlHttp.onreadystatechange = function() {
+
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {	
+
+					var params = xmlHttp.responseText.split("&");
+					var UUID = params[0];
+					var address = params[1];
+					var msToken = params[2];				
+
+					sessionStorage.setItem('data', UUID);
+					
+					var url_UI_uporto = address + '?msToken=' + msToken;
+
+					$('#windowLocalPDS').modal('hide');
+
+					window.globalInterval = window.setInterval(function() { validateFlag("identitymanager") }, window.intervalTimerValue)
+					window.watchDogInterval = window.setInterval(function() { 
+						if (window.currentWindow) {
+							window.currentWindow.close()
+						}
+						window.clearInterval(window.globalInterval)
+						window.clearInterval(window.watchDogInterval)
+						sessionStorage.removeItem('data');
+						
+						alert("Timeout has been reached, please try to access again.")
+					}, window.watchdogTimerValue)
+
+					displaySubwindowGET(url_UI_uporto);
+
+				}	// == 200
+
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
+
+					// The message error is displayed
+					$('#cloud-button-error').attr('style', "display: block;");
+
+					// The message error is displayed for 2 seconds and hidden
+					setTimeout(function(){ $('#cloud-button-error').attr('style', "display: none;"); }, 2000);
+				
+				}	// == 404
+
+			}	// onreadystatechange
+
+			xmlHttp.open("GET", url, true); // true for asynchronous
+			xmlHttp.send();	
+
+		}	// funcCloudPDS
+
+
+		function funcSSI(moduleID) {
+
+			if (window.globalInterval) {
+				window.clearInterval(window.globalInterval)
+				window.clearInterval(window.watchDogInterval)
+			}
+
+			if (window.currentWindow) {
+				window.currentWindow.close()
+			}
+			
+			var url = window.location.href + 'SSI?moduleID='+moduleID;
+
+			var xmlHttp = new XMLHttpRequest();
+
+			xmlHttp.onreadystatechange = function() {
+
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {	
+
+					var params = xmlHttp.responseText.split("&");
+					var UUID = params[0];
+					var address = params[1];
+					var msToken = params[2];
+
+					sessionStorage.setItem('data', UUID);
+
+					var url_UI_SSI = address + '?msToken=' + msToken;
+
+					$('#windowLocalPDS').modal('hide');
+
+					window.globalInterval = window.setInterval(function() { validateFlag("identitymanager") }, window.intervalTimerValue)
+					window.watchDogInterval = window.setInterval(function() { 
+						if (window.currentWindow) {
+							window.currentWindow.close()
+						}
+						window.clearInterval(window.globalInterval)
+						window.clearInterval(window.watchDogInterval)
+						sessionStorage.removeItem('data');
+						
+						alert("Timeout has been reached, please try to access again.")
+					}, window.watchdogTimerValue)
+
+					displaySubwindowGET(url_UI_SSI);
+
+				}	// == 200
+
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
+
+					alert('The selected method is not available at the moment, please retry in a few moments.')
+				
+				}	// == 404
+
+			}
+
+			xmlHttp.open("GET", url, true); // true for asynchronous
+			xmlHttp.send();	
+
+		}	// funcSSI
+
+   </script>
+{% endblock %}
