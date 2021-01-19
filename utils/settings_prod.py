@@ -1,3 +1,5 @@
+import os
+
 """Prod Settings global consts"""
 SEAL_ENDPOINT = os.environ.get('SEAL_ENDPOINT', '')
 
