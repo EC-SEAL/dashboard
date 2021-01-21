@@ -3,7 +3,7 @@ import os
 """Prod Settings global consts"""
 SEAL_ENDPOINT = os.environ.get('SEAL_ENDPOINT', '')
 
-USE_PROXY = False if (os.environ.get('USE_PROXY', 'False') == 'False') else True
+USE_PROXY = True if (os.environ.get('USE_PROXY', 'False') == 'True') else False
 
 SEAL_PROXY_HTTP_ENDPOINT = os.environ.get('SEAL_PROXY_HTTP_ENDPOINT', '')
 SEAL_PROXY_HTTPS_ENDPOINT = os.environ.get('SEAL_PROXY_HTTPS_ENDPOINT', '')
