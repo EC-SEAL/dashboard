@@ -12,7 +12,7 @@ def index(request):
 
     access_methods = cl_list.jsonParser(cl_list.getCollection('access'))
 
-    return render(request, 'umadashboard/sealdashboard.html', {'access_methods': access_methods})
+    return render(request, 'umadashboard/sealdashboard.html', {'access_methods': access_methods, 'seal_endpoint': Settings.Prod.SEAL_ENDPOINT})
 
 def identity_manager(request):
 
@@ -20,7 +20,7 @@ def identity_manager(request):
     # Pass it to the Django template to generate an Identity Manager with either VCissuer funct., or not.
     ssiWallet = None
 
-    return render(request, 'umadashboard/sealidentitymanager.html', {'ssiWallet': ssiWallet})
+    return render(request, 'umadashboard/sealidentitymanager.html', {'ssiWallet': ssiWallet, 'seal_endpoint': Settings.Prod.SEAL_ENDPOINT})
 
 def manageidentity(request, UUID):
     identities = uc0_02(UUID)
@@ -30,4 +30,4 @@ def manageidentity(request, UUID):
 
     else:
         print('Redirecting to index page: UUID_session = {}'.format(UUID))
-        return HttpResponseRedirect('https://seal.uma.es/seal')
+        return HttpResponseRedirect(Settings.Prod.SEAL_ENDPOINT)
