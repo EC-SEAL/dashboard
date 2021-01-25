@@ -455,7 +455,7 @@
 					window.clearInterval(window.watchDogInterval)
 					window.currentWindow.close();
 					alert('An internal server error has been occurred. You are about to be redirected to the login page')
-					window.location = {{seal_endpoint}};
+					window.location = '{{seal_endpoint}}';
 					
 				}	
 
@@ -600,7 +600,7 @@
 						if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
 
 							alert('Your session has been expired, please try to authenticate again.')
-							window.location = {{seal_endpoint}};	
+							window.location = '{{seal_endpoint}}';	
 
 						} // == 401
 
@@ -619,7 +619,7 @@
 
 			} else {
 				alert('Your session has been expired, please try to authenticate again.')
-				window.location = {{seal_endpoint}};				
+				window.location = '{{seal_endpoint}}';				
 			}
 
 		} // idSelector
@@ -672,7 +672,7 @@
 					if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
 
 						alert('Your session has been expired, please try to authenticate again.')
-						window.location = {{seal_endpoint}};	
+						window.location = '{{seal_endpoint}}';	
 
 					} // == 401
 
@@ -694,7 +694,7 @@
 			} else {
 
 				alert('Your session has been expired, please try to authenticate again.')
-				window.location = {{seal_endpoint}};
+				window.location = '{{seal_endpoint}}';
 
 			}
 
@@ -757,7 +757,7 @@
 					if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
 
 						alert('Your session has been expired, please try to authenticate again.')
-						window.location = {{seal_endpoint}};	
+						window.location = '{{seal_endpoint}}';	
 
 					} // == 401
 
@@ -778,7 +778,7 @@
 			}else {
 
 				alert('Your session has been expired, please try to authenticate again.')
-				window.location = {{seal_endpoint}};
+				window.location = '{{seal_endpoint}}';
 
 			}
 
@@ -842,11 +842,11 @@
 						} else if (xmlHttp.responseText == 'NO_SESSION') {
 
 							alert('Your session has been expired, please try to access again.')
-							window.location = {{seal_endpoint}};	
+							window.location = '{{seal_endpoint}}';	
 
 						} else {
 							alert('401 error received, redirecting to access page.')
-							window.location = {{seal_endpoint}};	
+							window.location = '{{seal_endpoint}}';	
 						}
 
 					} // == 401
@@ -869,7 +869,7 @@
 			} else {
 
 				alert('Your session has been expired, please try to authenticate again.')
-				window.location = {{seal_endpoint}};
+				window.location = '{{seal_endpoint}}';
 
 			}
 
@@ -926,11 +926,11 @@
 						} else if (xmlHttp.responseText == 'NO_SESSION') {
 
 							alert('Your session has been expired, please try to access again.')
-							window.location = {{seal_endpoint}};	
+							window.location = '{{seal_endpoint}}';	
 
 						} else {
 							alert('401 error received, redirecting to access page.')
-							window.location = {{seal_endpoint}};	
+							window.location = '{{seal_endpoint}}';	
 						}
 
 					} // == 401
@@ -950,7 +950,7 @@
 			} else {
 
 				alert('Your session has been expired, please try to authenticate again.')
-				window.location = {{seal_endpoint}};
+				window.location = '{{seal_endpoint}}';
 
 			}
 
@@ -1008,7 +1008,7 @@
 					if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
 
 						alert('Your session has been expired, please try to access again.')
-						window.location = {{seal_endpoint}};	
+						window.location = '{{seal_endpoint}}';	
 
 					} // == 401
 
@@ -1027,7 +1027,7 @@
 			} else {
 
 				alert('Your session has been expired, please try to access again.')
-				window.location = {{seal_endpoint}};
+				window.location = '{{seal_endpoint}}';
 
 			}
 
@@ -1082,7 +1082,7 @@
 					if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
 
 						alert('Your session has been expired, please try to access again.')
-						window.location = {{seal_endpoint}};	
+						window.location = '{{seal_endpoint}}';	
 
 					} // == 401
 
@@ -1101,7 +1101,7 @@
 			} else {
 
 				alert('Your session has been expired, please try to access again.')
-				window.location = {{seal_endpoint}};
+				window.location = '{{seal_endpoint}}';
 
 			}
 
