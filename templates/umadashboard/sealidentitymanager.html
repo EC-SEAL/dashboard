@@ -298,7 +298,7 @@
 				$('#manage_identity_data').attr('href', 'manageidentitydata=' + sessionStorage.getItem('data'));
 			}else{
 			
-				setTimeout(function(){ alert('You have no active session, please try to authenticate again.'); window.location = {{seal_endpoint}} }, 1000);
+				setTimeout(function(){ alert('You have no active session, please try to authenticate again.'); window.location = '{{seal_endpoint}}' }, 1000);
 			}
 		});
 
