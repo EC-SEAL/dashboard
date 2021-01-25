@@ -1,5 +1,11 @@
 import os
 
+USING_DOCKER = True if (os.environ.get('USING_DOCKER', 'False') == 'True') else False
+
+if not USING_DOCKER:
+  from dotenv import load_dotenv
+  load_dotenv()
+
 """Prod Settings global consts"""
 SEAL_ENDPOINT = os.environ.get('SEAL_ENDPOINT', '')
 
