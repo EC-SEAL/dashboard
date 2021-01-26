@@ -14,7 +14,7 @@ urlpatterns = [
     path('loadLocalPDS/', csrf_exempt(useCases.uc1_02)),
     path('loadCloudPDS/', csrf_exempt(useCases.uc1_03)),
     path('SSI/', csrf_exempt(useCases.uc1_04)),
-    
+
     path('identitymanager/', views.identity_manager, name='identity_manager'),
 
     path('identitymanager/storeLocalPDS/', csrf_exempt(useCases.uc2_02)),

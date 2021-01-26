@@ -1,85 +1,114 @@
 """ APIGatewayClient Functions """
 
-import json, os
+import json
+import os
 import requests
 from . import api_settings as Settings
 
 """
-Class for the API methods: 
+Class for the API methods:
     GET /cl/auth/{moduleId}/login
     GET /cl/auth/{moduleId}/logout
     GET /cl/auth/logout
 """
-class Cl_auth: 
+
+
+class Cl_auth:
 
     def moduleLogin(self, _sessionId, _moduleId):
-        
-        if (Settings.DEBUG): print('Cl_auth moduleLogin INI')
+
+        if (Settings.DEBUG):
+            print('Cl_auth moduleLogin INI')
 
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
-        
+
         try:
-            r = s.get(Settings.Prod.API_GET_cl_auth_module_login.format(sessionId=_sessionId, moduleId=_moduleId), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_auth moduleLogin exception')
+            r = s.get(
+                Settings.Prod.API_GET_cl_auth_module_login.format(
+                    sessionId=_sessionId,
+                    moduleId=_moduleId),
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_auth moduleLogin exception')
             r = requests.Response()
 
         return r
-
 
     def moduleLogout(self, _sessionId, _moduleId):
 
-        if (Settings.DEBUG): print('Cl_auth moduleLogout INI')
+        if (Settings.DEBUG):
+            print('Cl_auth moduleLogout INI')
 
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
-        
-        try: 
-            r = s.get(Settings.Prod.API_GET_cl_auth_module_logout.format(sessionId=_sessionId, moduleId=_moduleId), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_auth moduleLogout exception')
+
+        try:
+            r = s.get(
+                Settings.Prod.API_GET_cl_auth_module_logout.format(
+                    sessionId=_sessionId,
+                    moduleId=_moduleId),
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_auth moduleLogout exception')
             r = requests.Response()
 
         return r
-
 
     def logout(self, _sessionId):
-        
-        if (Settings.DEBUG): print('Cl_auth logout INI')
+
+        if (Settings.DEBUG):
+            print('Cl_auth logout INI')
 
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
-        
-        try: 
-            r = s.get(Settings.Prod.API_GET_cl_auth_logout.format(sessionId=_sessionId), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_auth logout exception')
+
+        try:
+            r = s.get(
+                Settings.Prod.API_GET_cl_auth_logout.format(
+                    sessionId=_sessionId),
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_auth logout exception')
             r = requests.Response()
 
         return r
 
 
-
-"""Class for the API method: 
+"""Class for the API method:
     GET /cl/callback
 """
+
+
 class Cl_callback:
 
     def callback(self, _sessionId, _callbackAddr):
-        if (Settings.DEBUG): print('Cl_callback callaback')
+        if (Settings.DEBUG):
+            print('Cl_callback callaback')
 
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
-        
-        try: 
-            r = s.get(Settings.Prod.API_GET_cl_callback.format(sessionId=_sessionId, clientCallbackAddr=_callbackAddr), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_callback callback exception')
+
+        try:
+            r = s.get(
+                Settings.Prod.API_GET_cl_callback.format(
+                    sessionId=_sessionId,
+                    clientCallbackAddr=_callbackAddr),
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_callback callback exception')
             r = requests.Response()
 
         return r
@@ -92,6 +121,8 @@ class Cl_ident_linking:
 
 class Cl_ident_mgr:
 """
+
+
 class Cl_ident:
 
     """ JSON EXAMPLE FOR MGR/LIST:
@@ -114,350 +145,453 @@ class Cl_ident:
     def jsonParser(self, _data):
         if (isinstance(_data, requests.Response) and _data.status_code == 200):
             data = _data.json()
-           
-            for index in range(0,len(data)):
+
+            for index in range(0, len(data)):
                 result_data = json.loads(data[index].get('data'))
                 data[index].update({'data': result_data})
 
             identities_list = list()
 
-            for identity in range(0,len(data)):
+            for identity in range(0, len(data)):
                 if data[identity]['data'].get('type') == 'eIDAS':
 
-                    identities_list.append({"id": data[identity]['data'].get('id'),
-                                            "provider": data[identity]['data'].get('type'),
-                                            "loa": data[identity]['data'].get('loa'), 
-                                            "issued": data[identity]['data'].get('issued'),
-                                            "expiration": data[identity]['data'].get('expiration'), 
-                                            "attributes": data[identity]['data'].get('attributes')                                            
-                                            })                     
+                    identities_list.append(
+                        {
+                            "id": data[identity]['data'].get('id'),
+                            "provider": data[identity]['data'].get('type'),
+                            "loa": data[identity]['data'].get('loa'),
+                            "issued": data[identity]['data'].get('issued'),
+                            "expiration": data[identity]['data'].get('expiration'),
+                            "attributes": data[identity]['data'].get('attributes')})
 
                 elif data[identity]['data'].get('type') == 'eduGAIN':
 
-                    identities_list.append({"id": data[identity]['data'].get('id'),
-                                            "provider": data[identity]['data'].get('type'),
-                                            "loa": data[identity]['data'].get('loa'), 
-                                            "issued": data[identity]['data'].get('issued'),
-                                            "expiration": data[identity]['data'].get('expiration'), 
-                                            "attributes": data[identity]['data'].get('attributes')                                            
-                                            })                                            
+                    identities_list.append(
+                        {
+                            "id": data[identity]['data'].get('id'),
+                            "provider": data[identity]['data'].get('type'),
+                            "loa": data[identity]['data'].get('loa'),
+                            "issued": data[identity]['data'].get('issued'),
+                            "expiration": data[identity]['data'].get('expiration'),
+                            "attributes": data[identity]['data'].get('attributes')})
 
                 elif data[identity]['data'].get('type') == 'derivedID':
-                    
-                    identities_list.append({"id": data[identity]['data'].get('id'),
-                                            "provider": data[identity]['data'].get('type'),
-                                            "loa": data[identity]['data'].get('loa'), 
-                                            "issued": data[identity]['data'].get('issued'),
-                                            "expiration": data[identity]['data'].get('expiration'), 
-                                            "attributes": data[identity]['data'].get('attributes')                                            
-                                            }) 
 
-                elif (data[identity]['data'].get('type') == 'linkedID' or data[identity]['data'].get('type') == None):
+                    identities_list.append(
+                        {
+                            "id": data[identity]['data'].get('id'),
+                            "provider": data[identity]['data'].get('type'),
+                            "loa": data[identity]['data'].get('loa'),
+                            "issued": data[identity]['data'].get('issued'),
+                            "expiration": data[identity]['data'].get('expiration'),
+                            "attributes": data[identity]['data'].get('attributes')})
 
-                    datasetA = {"id": data[identity]['data'].get('datasetA').get('id'),
-                                "provider": data[identity]['data'].get('datasetA').get('type'),
-                                "loa": data[identity]['data'].get('datasetA').get('loa'), 
-                                "issued": data[identity]['data'].get('datasetA').get('issued'),
-                                "expiration": data[identity]['data'].get('datasetA').get('expiration'), 
-                                "attributes": data[identity]['data'].get('datasetA').get('attributes')                                            
-                                }
+                elif (data[identity]['data'].get('type') == 'linkedID' or data[identity]['data'].get('type') is None):
 
-                    datasetB = {"id": data[identity]['data'].get('datasetB').get('id'),
-                                "provider": data[identity]['data'].get('datasetB').get('type'),
-                                "loa": data[identity]['data'].get('datasetB').get('loa'), 
-                                "issued": data[identity]['data'].get('datasetB').get('issued'),
-                                "expiration": data[identity]['data'].get('datasetB').get('expiration'), 
-                                "attributes": data[identity]['data'].get('datasetB').get('attributes')                                            
-                                }                                
+                    datasetA = {
+                        "id": data[identity]['data'].get('datasetA').get('id'),
+                        "provider": data[identity]['data'].get('datasetA').get('type'),
+                        "loa": data[identity]['data'].get('datasetA').get('loa'),
+                        "issued": data[identity]['data'].get('datasetA').get('issued'),
+                        "expiration": data[identity]['data'].get('datasetA').get('expiration'),
+                        "attributes": data[identity]['data'].get('datasetA').get('attributes')}
 
-                    identities_list.append({"id": data[identity]['data'].get('id'),
-                                            "provider": data[identity]['data'].get('type'),
-                                            "lloa": data[identity]['data'].get('lloa'), 
-                                            "issued": data[identity]['data'].get('issued'),
-                                            "expiration": data[identity]['data'].get('expiration'), 
-                                            "datasetA": datasetA,
-                                            "datasetB": datasetB
-                                            }) 
+                    datasetB = {
+                        "id": data[identity]['data'].get('datasetB').get('id'),
+                        "provider": data[identity]['data'].get('datasetB').get('type'),
+                        "loa": data[identity]['data'].get('datasetB').get('loa'),
+                        "issued": data[identity]['data'].get('datasetB').get('issued'),
+                        "expiration": data[identity]['data'].get('datasetB').get('expiration'),
+                        "attributes": data[identity]['data'].get('datasetB').get('attributes')}
 
+                    identities_list.append(
+                        {
+                            "id": data[identity]['data'].get('id'),
+                            "provider": data[identity]['data'].get('type'),
+                            "lloa": data[identity]['data'].get('lloa'),
+                            "issued": data[identity]['data'].get('issued'),
+                            "expiration": data[identity]['data'].get('expiration'),
+                            "datasetA": datasetA,
+                            "datasetB": datasetB})
 
-            
-            providers_list = list( identity.get('provider') for identity in identities_list )
+            providers_list = list(identity.get('provider')
+                                  for identity in identities_list)
             #['eIDAS', 'eduGAIN', 'eduGAIN', 'eduGAIN']
 
-            #Adaptation until linked idenitites come with a valid provider:
-            providers_list = [ provider if provider != None else 'linkedID' for provider in providers_list ]
+            # Adaptation until linked idenitites come with a valid provider:
+            providers_list = [
+                provider if provider is not None else 'linkedID' for provider in providers_list]
 
-            #List without duplicity
+            # List without duplicity
             providers_list = list(set(providers_list))
-        
-            #Sorted list by caseforld key
+
+            # Sorted list by caseforld key
             providers_list = sorted(providers_list, key=str.casefold)
 
-            return dict( {"uniqueProviders": providers_list, "identitiesList": identities_list} )
+            return dict({"uniqueProviders": providers_list,
+                         "identitiesList": identities_list})
             #['eIDAS', 'eduGAIN']
-            
+
         else:
             return list()
 
     def sourceRetrieve(self, _sessionId, _moduleId):
-        
-        if (Settings.DEBUG): print('Cl_ident sourceRetrieve INI')
+
+        if (Settings.DEBUG):
+            print('Cl_ident sourceRetrieve INI')
 
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
-        
-        try: 
-            r = s.get(Settings.Prod.API_GET_cl_ident_source_module_retrieve.format(sessionId=_sessionId, moduleId=_moduleId), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_ident sourceRetrieve exception')
+
+        try:
+            r = s.get(
+                Settings.Prod.API_GET_cl_ident_source_module_retrieve.format(
+                    sessionId=_sessionId,
+                    moduleId=_moduleId),
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_ident sourceRetrieve exception')
             r = requests.Response()
 
         return r
 
     def mgrList(self, _sessionId):
 
-        if (Settings.DEBUG): print('Cl_ident mgrList INI')
+        if (Settings.DEBUG):
+            print('Cl_ident mgrList INI')
 
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
-        
-        try: 
-            r = s.get(Settings.Prod.API_GET_cl_ident_mgr_list.format(sessionId=_sessionId), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_ident mgrList exception')
+
+        try:
+            r = s.get(
+                Settings.Prod.API_GET_cl_ident_mgr_list.format(
+                    sessionId=_sessionId),
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_ident mgrList exception')
             r = requests.Response()
 
         return r
 
-    def linkingRequest(self, _sessionId, _moduleId, _datasetId_A, _datasetId_B):
+    def linkingRequest(
+            self,
+            _sessionId,
+            _moduleId,
+            _datasetId_A,
+            _datasetId_B):
 
-        if (Settings.DEBUG): print('Cl_ident linkingRequest INI')
+        if (Settings.DEBUG):
+            print('Cl_ident linkingRequest INI')
 
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
         payload = {'datasetIDa': _datasetId_A, 'datasetIDb': _datasetId_B}
 
-        try: 
-            r = s.post(Settings.Prod.API_POST_cl_ident_linking_module_request.format(moduleId=_moduleId, sessionId=_sessionId), data=payload, headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_ident linkingRequest exception')
+        try:
+            r = s.post(
+                Settings.Prod.API_POST_cl_ident_linking_module_request.format(
+                    moduleId=_moduleId,
+                    sessionId=_sessionId),
+                data=payload,
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_ident linkingRequest exception')
             r = requests.Response()
 
         return r
 
     def linkingRequestStatus(self, _sessionId, _moduleId, _requestId):
 
-        if (Settings.DEBUG): print('Cl_ident linkingRequestStatus INI')
+        if (Settings.DEBUG):
+            print('Cl_ident linkingRequestStatus INI')
 
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
 
-        try: 
-            r = s.get(Settings.Prod.API_GET_cl_ident_linking_module_request_status.format(moduleId=_moduleId, requestId=_requestId, sessionId=_sessionId), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_ident linkingRequestStatus exception')
+        try:
+            r = s.get(
+                Settings.Prod.API_GET_cl_ident_linking_module_request_status.format(
+                    moduleId=_moduleId,
+                    requestId=_requestId,
+                    sessionId=_sessionId),
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_ident linkingRequestStatus exception')
             r = requests.Response()
 
         return r
 
     def derivationGenerate(self, _sessionId, _moduleId):
 
-        if (Settings.DEBUG): print('Cl_ident derivationGenerate INI')
+        if (Settings.DEBUG):
+            print('Cl_ident derivationGenerate INI')
 
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
-        
-        try: 
-            r = s.get(Settings.Prod.API_GET_cl_ident_derivation_module_generate.format(sessionId=_sessionId, moduleId=_moduleId), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_ident derivationGenerate exception')
+
+        try:
+            r = s.get(
+                Settings.Prod.API_GET_cl_ident_derivation_module_generate.format(
+                    sessionId=_sessionId,
+                    moduleId=_moduleId),
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_ident derivationGenerate exception')
             r = requests.Response()
 
         return r
 
 
-"""Class for the API method: 
+"""Class for the API method:
     GET /cl/list/{collection}
 """
+
+
 class Cl_list:
 
     def _fetchDescription(self, _name):
-        description = Settings.Prod.GLOBAL_DESCRIPTION_DICT.get(_name) 
+        description = Settings.Prod.GLOBAL_DESCRIPTION_DICT.get(_name)
         if (description):
             return description
         else:
             return ""
 
-
     def jsonParser(self, _data):
         if (isinstance(_data, requests.Response) and _data.status_code == 200):
             data = _data.json()
-            return ({ "name": data[x][list(data[x])[0]].get('entityId'), "description": self._fetchDescription(data[x][list(data[x])[0]].get('entityId')) }  for x in range(0,len(data) ))        
+            return ({"name": data[x][list(data[x])[0]].get('entityId'), "description": self._fetchDescription(
+                data[x][list(data[x])[0]].get('entityId'))} for x in range(0, len(data)))
         else:
             return list()
 
-
     def getCollection(self, _collection):
 
-        try:  
-            if (Settings.DEBUG): print('Cl_list getCollection Session')
+        try:
+            if (Settings.DEBUG):
+                print('Cl_list getCollection Session')
             s = requests.Session()
 
             headers = {'Accept': 'application/json'}
-            if (Settings.DEBUG): print(Settings.Prod.SEAL_PROXY)
+            if (Settings.DEBUG):
+                print(Settings.Prod.SEAL_PROXY)
 
-            r = s.get(Settings.Prod.API_GET_cl_list_collection.format(collection=_collection), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
+            r = s.get(
+                Settings.Prod.API_GET_cl_list_collection.format(
+                    collection=_collection),
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
 
             return r
 
-        except:
-            if (Settings.DEBUG): print('Cl_list getCollection exception')
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_list getCollection exception')
             return requests.Response()
 
 
 """
-Class for the API methods: 
+Class for the API methods:
     GET /cl/persistence/{moduleID}/load
     GET /cl/persistence/{moduleID}/store
 """
+
+
 class Cl_persistence:
 
     def load(self, _sessionId, _moduleId):
 
-        if (Settings.DEBUG): print('Cl_persistence load INI')
+        if (Settings.DEBUG):
+            print('Cl_persistence load INI')
 
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
-        
-        try: 
-            r = s.get(Settings.Prod.API_GET_cl_persistence_module_load.format(sessionId=_sessionId, moduleId=_moduleId), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_persistence load exception')
+
+        try:
+            r = s.get(
+                Settings.Prod.API_GET_cl_persistence_module_load.format(
+                    sessionId=_sessionId,
+                    moduleId=_moduleId),
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_persistence load exception')
             r = requests.Response()
 
         return r
-
 
     def store(self, _sessionId, _moduleId):
 
-        if (Settings.DEBUG): print('Cl_persistence store INI')
+        if (Settings.DEBUG):
+            print('Cl_persistence store INI')
 
         s = requests.Session()
         headers = {'Accept': 'application/json'}
-        
-        try: 
-            r = s.get(Settings.Prod.API_GET_cl_persistence_module_store.format(sessionId=_sessionId, moduleId=_moduleId), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_persistence store exception')
+
+        try:
+            r = s.get(
+                Settings.Prod.API_GET_cl_persistence_module_store.format(
+                    sessionId=_sessionId,
+                    moduleId=_moduleId),
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_persistence store exception')
             r = requests.Response()
 
         return r
 
-
     def perLoadSessionToken(self, _sessionToken, _password, _PDS):
 
-        if (Settings.DEBUG): print('Cl_persistence perLoadSessionToken INI')
+        if (Settings.DEBUG):
+            print('Cl_persistence perLoadSessionToken INI')
 
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
         payload = {'dataStore': _PDS}
 
-        try: 
-            r = s.post(Settings.Prod.API_POST_cl_persistence_per_load_sessionToken.format(sessionToken=_sessionToken, password=_password), data=payload, headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_persistence perLoadSessionToken exception')
-            r = requests.Response()        
+        try:
+            r = s.post(
+                Settings.Prod.API_POST_cl_persistence_per_load_sessionToken.format(
+                    sessionToken=_sessionToken,
+                    password=_password),
+                data=payload,
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_persistence perLoadSessionToken exception')
+            r = requests.Response()
         return r
-
 
     def perLoad(self, _sessionToken):
 
-        if (Settings.DEBUG): print('Cl_persistence perLoad INI')
+        if (Settings.DEBUG):
+            print('Cl_persistence perLoad INI')
 
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
         payload = {'msToken': _sessionToken}
 
-        try: 
-            r = s.post(Settings.Prod.API_POST_cl_persistence_per_load, data=payload, headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_persistence perLoad exception')
-            r = requests.Response()     
+        try:
+            r = s.post(
+                Settings.Prod.API_POST_cl_persistence_per_load,
+                data=payload,
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_persistence perLoad exception')
+            r = requests.Response()
         return r
 
 
 """
-Class for the API methods: 
+Class for the API methods:
     GET /cl/session/start
     GET /cl/session/end
 """
+
+
 class Cl_session:
-    
-    sessionID = None 
+
+    sessionID = None
 
     def sessionStart(self, _sessionId=None):
 
-        if (Settings.DEBUG): print('Cl_session sessionStart INI')
+        if (Settings.DEBUG):
+            print('Cl_session sessionStart INI')
 
         s = requests.Session()
         headers = {'Accept': 'application/json'}
 
-        if (_sessionId != None):
-            try:               
-                r = s.get(Settings.Prod.API_GET_cl_session_start.format(sessionId='?sessionID='+_sessionId), headers=headers, proxies=Settings.Prod.SEAL_PROXY)                   
-                
+        if (_sessionId is not None):
+            try:
+                r = s.get(
+                    Settings.Prod.API_GET_cl_session_start.format(
+                        sessionId='?sessionID=' + _sessionId),
+                    headers=headers,
+                    proxies=Settings.Prod.SEAL_PROXY)
+
                 if (r.status_code == 200):
                     self.sessionID = r.json().get('payload')
 
-            except:
-                if (Settings.DEBUG): print('Cl_session sessionStart exception with sessionId')
+            except BaseException:
+                if (Settings.DEBUG):
+                    print('Cl_session sessionStart exception with sessionId')
                 r = requests.Response()
         else:
-            try: 
-                r = s.get(Settings.Prod.API_GET_cl_session_start.format(sessionId=''), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-                
+            try:
+                r = s.get(
+                    Settings.Prod.API_GET_cl_session_start.format(
+                        sessionId=''),
+                    headers=headers,
+                    proxies=Settings.Prod.SEAL_PROXY)
+
                 if (r.status_code == 200):
                     self.sessionID = r.json().get('payload')
-                
-            except:
-                if (Settings.DEBUG): print('Cl_session sessionStart exception without sessionId')
+
+            except BaseException:
+                if (Settings.DEBUG):
+                    print('Cl_session sessionStart exception without sessionId')
                 r = requests.Response()
 
         return r
-
 
     def sessionEnd(self, _sessionId=None):
 
-        if (Settings.DEBUG): print('Cl_session sessionEnd INI')
+        if (Settings.DEBUG):
+            print('Cl_session sessionEnd INI')
 
         s = requests.Session()
         headers = {'Accept': 'application/json'}
-        
-        if (_sessionId != None):
-            try: 
-                r = s.get(Settings.Prod.API_GET_cl_session_end.format(sessionId=_sessionId), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
 
-            except:
-                if (Settings.DEBUG): print('Cl_session sessionEnd exception with sessionId')
+        if (_sessionId is not None):
+            try:
+                r = s.get(
+                    Settings.Prod.API_GET_cl_session_end.format(
+                        sessionId=_sessionId),
+                    headers=headers,
+                    proxies=Settings.Prod.SEAL_PROXY)
+
+            except BaseException:
+                if (Settings.DEBUG):
+                    print('Cl_session sessionEnd exception with sessionId')
                 r = requests.Response()
         else:
-            try: 
-                r = s.get(Settings.Prod.API_GET_cl_session_end.format(sessionId=self.sessionID), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
+            try:
+                r = s.get(
+                    Settings.Prod.API_GET_cl_session_end.format(
+                        sessionId=self.sessionID),
+                    headers=headers,
+                    proxies=Settings.Prod.SEAL_PROXY)
 
-            except:
-                if (Settings.DEBUG): print('Cl_session sessionEnd exception without sessionId')
+            except BaseException:
+                if (Settings.DEBUG):
+                    print('Cl_session sessionEnd exception without sessionId')
                 r = requests.Response()
 
         return r
-
 
     def sessionStartAndEnd(self):
         self.sessionStart()
@@ -465,46 +599,65 @@ class Cl_session:
 
 
 """
-Class for the API methods: 
+Class for the API methods:
     GET /cl/token/validate
 """
+
+
 class Cl_token:
 
     def validate(self, _msToken, _sessionId):
 
-        if (Settings.DEBUG): print('Cl_token validate INI')
-        
+        if (Settings.DEBUG):
+            print('Cl_token validate INI')
+
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
-        
-        try:          
-            r = s.get(Settings.Prod.API_GET_cl_token_validate.format(msToken=_msToken, sessionId=_sessionId), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_token validate exception')
+
+        try:
+            r = s.get(
+                Settings.Prod.API_GET_cl_token_validate.format(
+                    msToken=_msToken,
+                    sessionId=_sessionId),
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_token validate exception')
             r = requests.Response()
 
         return r
 
 
 """
-Class for the API methods: 
+Class for the API methods:
     GET /cl/vc/issuing/generate
 """
+
+
 class Cl_vcissuing:
 
     def generate(self, _sessionId, _SSIId, _vcDefinition):
 
-        if (Settings.DEBUG): print('Cl_vcissuing generate INI')
-        
+        if (Settings.DEBUG):
+            print('Cl_vcissuing generate INI')
+
         s = requests.Session()
 
         headers = {'Accept': 'application/json'}
-        
-        try:          
-            r = s.get(Settings.Prod.API_GET_cl_vc_issuing_module_generate.format(SSIId=_SSIId, sessionId=_sessionId, vcDefinition=_vcDefinition), headers=headers, proxies=Settings.Prod.SEAL_PROXY)
-        except:
-            if (Settings.DEBUG): print('Cl_vcissuing generate exception')
+
+        try:
+            r = s.get(
+                Settings.Prod.API_GET_cl_vc_issuing_module_generate.format(
+                    SSIId=_SSIId,
+                    sessionId=_sessionId,
+                    vcDefinition=_vcDefinition),
+                headers=headers,
+                proxies=Settings.Prod.SEAL_PROXY)
+        except BaseException:
+            if (Settings.DEBUG):
+                print('Cl_vcissuing generate exception')
             r = requests.Response()
 
         return r
