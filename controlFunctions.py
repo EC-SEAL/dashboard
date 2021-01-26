@@ -28,9 +28,11 @@ def _recuperarSession(request, _ID):
 
     user = request.session.get(_ID, None)
     if (user is not None):
-        return request.session.get(_ID).get('session',{})
+        session =  Cl_session()
+        session.sessionID = user.get(_ID).get('session', None)
+        return session
     else:
-        return user
+        return None
 
 
 # Return a newly created user's session, and store it (overwriting) in the
@@ -43,7 +45,7 @@ def _crearSession(request, _ID):
         session.sessionStart()
 
         # if(request.session.get(_ID)) del user_sessions.get(_ID).get('session')
-        request.session[_ID] = {"session": session,
+        request.session[_ID] = {"session": session.sessionID,
                                 "timestamp": datetime.datetime.now().timestamp()}
         return session
     except BaseException:

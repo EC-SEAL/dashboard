@@ -597,6 +597,9 @@ class Cl_session:
         self.sessionStart()
         self.sessionEnd()
 
+    def __str__(self):
+        return self.sessionID
+
 
 """
 Class for the API methods:
