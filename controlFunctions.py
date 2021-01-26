@@ -29,7 +29,7 @@ def _recuperarSession(request, _ID):
     user = request.session.get(_ID, None)
     if (user is not None):
         session =  Cl_session()
-        session.sessionID = user.get(_ID).get('session', None)
+        session.sessionID = user.get('session', None)
         return session
     else:
         return None
