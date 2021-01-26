@@ -26,10 +26,17 @@ def getUUID():
 # Return a user's session object for a specific ID (UUID)
 def _recuperarSession(request, _ID):
 
+    #Print request.session.get(_ID)
+    print(request.session.get(_ID, None))
+
     user = request.session.get(_ID, None)
     if (user is not None):
         session =  Cl_session()
         session.sessionID = user.get('session', None)
+        
+        #Printing sessionID and debuging:
+        print(session.sessionID)
+        
         return session
     else:
         return None
