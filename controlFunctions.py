@@ -12,14 +12,14 @@ import redis
 # user's session in the system
 class user_session:
     redis_connection = None
-    def __init__(redis_connection=redis.Redis(host='redis')):
+    def __init__(self, redis_connection=redis.Redis(host='redis')):
         self.redis_connection = redis_connection
 
-    def set(key, dictionary):
+    def set(self, key, dictionary):
         # We always save dictionaries as JSON objects
         return self.redis_connection.set(key, json.dumps(dictionary))
 
-    def get(key):
+    def get(self, key):
         # We always save dictionaries as JSON objects, so ...
         return json.loads(self.redis_connection.get(key))
 
@@ -43,9 +43,11 @@ def _recuperarSession(_ID):
 
     user = user_sessions.get(_ID)
     if (user is not None):
-        return user_sessions.get(_ID).get('session')
+        session = Cl_session()
+        session.sessionID = user.get('session')
+        return session
     else:
-        return user
+        return None
 
 
 # Return a newly created user's session, and store it (overwriting) in the
@@ -58,8 +60,8 @@ def _crearSession(_ID):
         session.sessionStart()
 
         # if(user_sessions.get(_ID)) del user_sessions.get(_ID).get('session')
-        user_sessions[_ID] = {"session": session,
-                              "timestamp": datetime.datetime.now().timestamp()}
+        user_sessions.set(_ID, {"session": session.sessionID,
+                                "timestamp": datetime.datetime.now().timestamp()})
         return session
     except BaseException:
         print('ERROR-cS-001: Error creating the new session for the ID: {}'.format(_ID))
@@ -69,18 +71,20 @@ def _crearSession(_ID):
 # Return the timestamp value for a user ID
 def _recuperarTimestamp(_ID):
     try:
-        return user_sessions.get(_ID).get('timestamp')
+        return float(user_sessions.get(_ID).get('timestamp')) #Check whether the re-casting causes problems or not.
     except BaseException:
         return None
 
 
 # Update the timestamp value for a user ID
 def _actualizarTimestamp(_ID):
+    
     if (_recuperarTimestamp(_ID) is not None):
-        user_sessions.get(_ID).update(
-            {"timestamp": datetime.datetime.now().timestamp()})
+        user = user_sessions.get(_ID)
+        user.update({"timestamp": datetime.datetime.now().timestamp()})
+        user_sessions.set(_ID, user)
 
-    return _recuperarTimestamp(_ID)
+    return None
 
 
 # Create or Update the Flag for a user ID
@@ -89,6 +93,7 @@ def _crearTokenFlag(_ID, _flag):
 
     if (user is not None):
         user.update({'flag': _flag})
+        user_sessions.set(_ID, user)
         return True
     else:
         if (Settings.DEBUG):
@@ -108,7 +113,9 @@ def _recuperarTokenFlag(_ID):
 
 def _resetearTokenFlag(_ID):
     try:
-        user_sessions.get(_ID).update({"flag": None})
+        user = user_sessions.get(_ID)
+        user.update({"flag": None})
+        user_sessions.set(_ID, user)
         return True
     except BaseException:
         return False
