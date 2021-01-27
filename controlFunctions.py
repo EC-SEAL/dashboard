@@ -1,14 +1,14 @@
+from .utils.api import *
 from django.http import *
 from django.core.handlers.wsgi import WSGIRequest
 import datetime
 import uuid
-import jwt
 from .utils import api_settings as Settings
-from .utils.api import *
+import jwt
 
 # Dictionary with the access_token or ID, and timestamp value for every
 # user's session in the system
-#request.session = {}
+user_sessions = {}
 
 # MAX TIME (in seconds) for a user's session to be valid in the system
 SESSION_THRESHOLD = 300
@@ -24,36 +24,27 @@ def getUUID():
 
 
 # Return a user's session object for a specific ID (UUID)
-def _recuperarSession(request, _ID):
+def _recuperarSession(_ID):
 
-    #Print request.session.get(_ID)
-    print(request.session.get(_ID, None))
-
-    user = request.session.get(_ID, None)
+    user = user_sessions.get(_ID)
     if (user is not None):
-        session =  Cl_session()
-        session.sessionID = user.get('session', None)
-        
-        #Printing sessionID and debuging:
-        print(session.sessionID)
-        
-        return session
+        return user_sessions.get(_ID).get('session')
     else:
-        return None
+        return user
 
 
 # Return a newly created user's session, and store it (overwriting) in the
 # dictionary user's entry, along with the tiemstamp value (overwriting).
-def _crearSession(request, _ID):
+def _crearSession(_ID):
 
     session = Cl_session()
 
     try:
         session.sessionStart()
 
-        # if(request.session.get(_ID)) del user_sessions.get(_ID).get('session')
-        request.session[_ID] = {"session": session.sessionID,
-                                "timestamp": datetime.datetime.now().timestamp()}
+        # if(user_sessions.get(_ID)) del user_sessions.get(_ID).get('session')
+        user_sessions[_ID] = {"session": session,
+                              "timestamp": datetime.datetime.now().timestamp()}
         return session
     except BaseException:
         print('ERROR-cS-001: Error creating the new session for the ID: {}'.format(_ID))
@@ -61,29 +52,28 @@ def _crearSession(request, _ID):
 
 
 # Return the timestamp value for a user ID
-def _recuperarTimestamp(request, _ID):
+def _recuperarTimestamp(_ID):
     try:
-        return request.session.get(_ID).get('timestamp', None)
+        return user_sessions.get(_ID).get('timestamp')
     except BaseException:
         return None
 
 
 # Update the timestamp value for a user ID
-def _actualizarTimestamp(request, _ID):
-    if (_recuperarTimestamp(request, _ID) is not None):
-        request.session.get(_ID).update(
+def _actualizarTimestamp(_ID):
+    if (_recuperarTimestamp(_ID) is not None):
+        user_sessions.get(_ID).update(
             {"timestamp": datetime.datetime.now().timestamp()})
 
-    return _recuperarTimestamp(request, _ID)
+    return _recuperarTimestamp(_ID)
 
 
 # Create or Update the Flag for a user ID
-def _crearTokenFlag(request, _ID, _flag):
-    user = request.session.get(_ID, None)
+def _crearTokenFlag(_ID, _flag):
+    user = user_sessions.get(_ID)
 
     if (user is not None):
         user.update({'flag': _flag})
-        request.session[_ID] = user
         return True
     else:
         if (Settings.DEBUG):
@@ -92,59 +82,63 @@ def _crearTokenFlag(request, _ID, _flag):
 
 
 # Return the Flag for a user ID
-def _recuperarTokenFlag(request, _ID):
+def _recuperarTokenFlag(_ID):
     try:
-        return request.session.get(_ID).get('flag', None)
+        return user_sessions.get(_ID).get('flag')
     except BaseException:
         return None
 
 # Return True if the reset is OK, False otherwise
 
 
-def _resetearTokenFlag(request, _ID):
+def _resetearTokenFlag(_ID):
     try:
-        request.session.get(_ID).update({"flag": None})
+        user_sessions.get(_ID).update({"flag": None})
         return True
     except BaseException:
         return False
 
 
+"""
+
 ### TO-DO: Verify whether the LinkId has to be stored or not in the users session dictionary.
 
-#def _setTemporaryLinkID(request, _ID, _linkID):
-#    try:
-#        user = request.session.get(_ID)
 #
-#        assert(user != None)
-#        user.update({'linkID': _linkID})
-#        return True
-#
-#    except:
-#        return False
-#
-#def _getTemporaryLinkID(request, _ID):
-#    try:
-#        pass
-#    except:
-#        pass
-#
-#def _deleteTemporaryLinkID(request, _ID, _linkID):
-#    try:
-#        pass
-#    except:
-#        pass
-#
+def _setTemporaryLinkID(_ID, _linkID):
+    try:
+        user = user_sessions.get(_ID)
 
+        assert(user != None)
+        user.update({'linkID': _linkID})
+        return True
+
+    except:
+        return False
+
+#
+def _getTemporaryLinkID(_ID):
+    try:
+        pass
+    except:
+        pass
+
+#
+def _deleteTemporaryLinkID(_ID, _linkID):
+    try:
+        pass
+    except:
+        pass """
+
+
+"""
+    Return the sessionId for a valid UUID (debug function, DEBUG=True)
+"""
 
 
 def debugGetSessionId(request, UUID):
-    """
-    Return the sessionId for a valid UUID (debug function, DEBUG=True).
-    """
-
     try:
         assert(Settings.DEBUG)
-        return HttpResponse(_recuperarSession(request, UUID).sessionID, status=200)
+        return HttpResponse(_recuperarSession(UUID).sessionID, status=200)
     except BaseException:
         return HttpResponse(status=404)
 
@@ -154,10 +148,10 @@ def debugGetSessionId(request, UUID):
 """
 
 
-def getSessionId(request, UUID):
+def getSessionId(UUID):
 
-    if(sessionExists(request, UUID) and sessionValid(request, UUID)):
-        return _recuperarSession(request, UUID)
+    if(sessionExists(UUID) and sessionValid(UUID)):
+        return _recuperarSession(UUID)
     else:
         return None
 
@@ -167,15 +161,15 @@ def getSessionId(request, UUID):
 """
 
 
-def sessionExists(request, UUID):
+def sessionExists(UUID):
     try:
-        assert(_recuperarSession(request, UUID) is not None)
+        assert(_recuperarSession(UUID) is not None)
         return True
     except BaseException:
         print('Except session Exist')
         return False
 
-    # return True if _recuperarSession(request, UUID) != None else False
+    # return True if _recuperarSession(UUID) != None else False
 
 
 """
@@ -183,9 +177,9 @@ def sessionExists(request, UUID):
 """
 
 
-def sessionValid(request, UUID):
+def sessionValid(UUID):
     try:
-        timeStamp = _recuperarTimestamp(request, UUID)
+        timeStamp = _recuperarTimestamp(UUID)
         assert((timeStamp is not None) and (
             (timeStamp + SESSION_THRESHOLD >= datetime.datetime.now().timestamp())))
         return True
@@ -208,25 +202,25 @@ cl/session startSession(sessionID) to be implemented by the APIGatewayClient
 """
 
 
-def sessionControl(request, _ID):
+def sessionControl(_ID):
 
     if (Settings.DEBUG):
         print('sC INI')
 
     # Create a new session
-    if (_recuperarSession(request, _ID) is None):
-        return _crearSession(request, _ID)
+    if (_recuperarSession(_ID) is None):
+        return _crearSession(_ID)
 
     # Update an outdated session
-    elif ((_recuperarTimestamp(request, _ID) + SESSION_THRESHOLD < datetime.datetime.now().timestamp())):
+    elif ((_recuperarTimestamp(_ID) + SESSION_THRESHOLD < datetime.datetime.now().timestamp())):
         if (Settings.DEBUG):
             print('DEBUG-sC-001: Timestamp outdated')
-        return _crearSession(request, _ID)
+        return _crearSession(_ID)
 
     # Retrieve a valid session
     else:
-        _actualizarTimestamp(request, _ID)
-        return _recuperarSession(request, _ID)
+        _actualizarTimestamp(_ID)
+        return _recuperarSession(_ID)
 
 
 """
@@ -249,7 +243,7 @@ def tokenControl(request, UUID):
 
         try:
             print('DEBUG: UUID: {} - sessionId: {}'.format(UUID,
-                                                           _recuperarSession(request, UUID).sessionID))
+                                                           _recuperarSession(UUID).sessionID))
         except BaseException:
             print('DEBUG_ERROR-tC-001: Error token validation (UUID not found)')
 
@@ -260,13 +254,13 @@ def tokenControl(request, UUID):
 
         try:
             token = request.POST.get('msToken')
-            r = Cl_token().validate(token, _recuperarSession(request, UUID).sessionID)
+            r = Cl_token().validate(token, _recuperarSession(UUID).sessionID)
 
             assert(r.status_code == 200)
             result = jwt.decode(token, verify=False)
 
             assert(result.get('sessionId') ==
-                   _recuperarSession(request, UUID).sessionID)
+                   _recuperarSession(UUID).sessionID)
 
             try:
 
@@ -277,11 +271,11 @@ def tokenControl(request, UUID):
 
                 if result.get('data').get('code') == 'OK':
                     # Everything's OK!
-                    assert(_crearTokenFlag(request, UUID, result))
+                    assert(_crearTokenFlag(UUID, result))
 
                 elif result.get('data').get('code') == 'ERROR':
                     # Something went wrong...
-                    assert(_crearTokenFlag(request, UUID, result))
+                    assert(_crearTokenFlag(UUID, result))
 
                 else:
                     raise Exception
@@ -296,7 +290,7 @@ def tokenControl(request, UUID):
                         'code': 'OK',
                         'additionalData': 'msToken received, but no data field found. MOCKED!'}}
                 # *********************
-                assert(_crearTokenFlag(request, UUID, result))
+                assert(_crearTokenFlag(UUID, result))
 
             return HttpResponse(status=200)
 
@@ -317,7 +311,7 @@ def tokenControl(request, UUID):
                     'code': 'OK',
                     'additionalData': 'msToken not received. MOCKED!'}}
             # *********************
-            assert(_crearTokenFlag(request, UUID, result))
+            assert(_crearTokenFlag(UUID, result))
 
             return HttpResponse(status=200)
         except BaseException:
@@ -338,7 +332,7 @@ It checks whether a custom callback URL has been resolved and proceed depends on
 
 def tokenFlag(request, UUID):
 
-    flag = _recuperarTokenFlag(request, UUID)
+    flag = _recuperarTokenFlag(UUID)
 
     if (Settings.DEBUG):
         print('tF INI')
@@ -358,11 +352,11 @@ def tokenFlag(request, UUID):
 
             # The custom callback URL has been successfully resolved
             if (code == 'OK'):
-                assert(_resetearTokenFlag(request, UUID))
+                assert(_resetearTokenFlag(UUID))
                 return HttpResponse('OK', status=200)
             # The custom callback URL has been UNSUCCESSFULLY resolved
             elif (code == 'ERROR'):
-                assert(_resetearTokenFlag(request, UUID))
+                assert(_resetearTokenFlag(UUID))
                 return HttpResponse('ERROR', status=404)
             # The custom callback URL has been (Future implementation) resolved
             # elif (code == 'NEW'):
@@ -372,13 +366,13 @@ def tokenFlag(request, UUID):
             else:
                 if (Settings.DEBUG):
                     print('ERROR-tF-002: The undefined code is: ', code)
-                assert(_resetearTokenFlag(request, UUID))
+                assert(_resetearTokenFlag(UUID))
                 raise Exception
 
             # Mockup of the result sessionMngrResponse object validation
             # *********************
             # assert(flag.get('code') == 'OK')
-            # assert(_resetearTokenFlag(request, UUID))
+            # assert(_resetearTokenFlag(UUID))
             # return HttpResponse('OK', status=200) #No siempre debe responderse con OK -> cambiar a flag.code
             # *********************
 

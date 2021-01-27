@@ -22,15 +22,15 @@ def uc0_01(request):
         error_text = 'An error has been occured with the API Calls. Please, contact the System Administrador (Error_code: _ML01)'
 
         try:
-            assert(sessionExists(request, _UUID))
-            assert(sessionValid(request, _UUID))
+            assert(sessionExists(_UUID))
+            assert(sessionValid(_UUID))
         except BaseException:
             if (Settings.DEBUG):
                 print('DEBUG-uc0_01-ML-001: Error assert session exists or valid')
             return error_text, 401
 
         cl_ident = Cl_ident()
-        user_session = getSessionId(request, _UUID)
+        user_session = getSessionId(_UUID)
 
         identities = cl_ident.jsonParser(
             cl_ident.mgrList(user_session.sessionID))
@@ -96,15 +96,15 @@ def uc0_02(UUID):
         error_text = 'An error has been occured with the API Calls. Please, contact the System Administrador (Error_code: _ML02)'
 
         try:
-            assert(sessionExists(request, _UUID))
-            assert(sessionValid(request, _UUID))
+            assert(sessionExists(_UUID))
+            assert(sessionValid(_UUID))
         except BaseException:
             if (Settings.DEBUG):
                 print('DEBUG-uc0_02-ML-001: Error assert session exists or valid')
             return None
 
         cl_ident = Cl_ident()
-        user_session = getSessionId(request, _UUID)
+        user_session = getSessionId(_UUID)
 
         identities = cl_ident.jsonParser(
             cl_ident.mgrList(user_session.sessionID))
@@ -132,7 +132,7 @@ def uc1_02(request):
     def loadLocalPDS(_UUID, _moduleID):
         error_text = 'An error has been occured with the API Calls. Please, contact the System Administrador (Error_code: LLPDS)'
 
-        cl_session = sessionControl(request, _UUID)
+        cl_session = sessionControl(_UUID)
         cl_persistence = Cl_persistence()
         cl_callback = Cl_callback()
 
@@ -211,7 +211,7 @@ def uc1_03(request):
     def loadCloudPDS(_UUID, _moduleID):
         error_text = 'An error has been occured with the API Calls. Please, contact the System Administrador (Error_code: LCPDS)'
 
-        cl_session = sessionControl(request, _UUID)
+        cl_session = sessionControl(_UUID)
         cl_persistence = Cl_persistence()
         cl_callback = Cl_callback()
 
@@ -287,7 +287,7 @@ def uc1_04(request):
     def SSI(_UUID, _moduleID):
         error_text = 'An error has been occured with the API Calls. Please, contact the System Administrador (Error_code: SSI)'
 
-        cl_session = sessionControl(request, _UUID)
+        cl_session = sessionControl(_UUID)
         cl_ident = Cl_ident()
         cl_callback = Cl_callback()
 
@@ -364,14 +364,14 @@ def uc2_02(request):
         error_text = 'An error has been occured with the API Calls. Please, contact the System Administrador (Error_code: LLPDS)'
 
         try:
-            assert(sessionExists(request, _UUID))
-            assert(sessionValid(request, _UUID))
+            assert(sessionExists(_UUID))
+            assert(sessionValid(_UUID))
         except BaseException:
             if (Settings.DEBUG):
                 print('DEBUG-uc2_02-SLPDS-001: Error assert session exists or valid')
             return error_text, 401
 
-        cl_session = sessionControl(request, _UUID)
+        cl_session = sessionControl(_UUID)
         cl_persistence = Cl_persistence()
         cl_callback = Cl_callback()
 
@@ -447,14 +447,14 @@ def uc2_05(request):
         error_text = 'An error has been occured with the API Calls. Please, contact the System Administrador (Error_code: LLPDS)'
 
         try:
-            assert(sessionExists(request, _UUID))
-            assert(sessionValid(request, _UUID))
+            assert(sessionExists(_UUID))
+            assert(sessionValid(_UUID))
         except BaseException:
             if (Settings.DEBUG):
                 print('DEBUG-uc2_05-SCPDS-001: Error assert session exists or valid')
             return error_text, 401
 
-        cl_session = sessionControl(request, _UUID)
+        cl_session = sessionControl(_UUID)
         cl_persistence = Cl_persistence()
         cl_callback = Cl_callback()
 
@@ -531,14 +531,14 @@ def uc3_02(request):
         error_text = 'An error has been occured with the API Calls. Please, contact the System Administrador (Error_code: AID)'
 
         try:
-            assert(sessionExists(request, _UUID))
-            assert(sessionValid(request, _UUID))
+            assert(sessionExists(_UUID))
+            assert(sessionValid(_UUID))
         except BaseException:
             if (Settings.DEBUG):
                 print('DEBUG-uc3_02-AID-001: Error assert session exists or valid')
             return error_text, 401
 
-        cl_session = sessionControl(request, _UUID)
+        cl_session = sessionControl(_UUID)
         cl_auth = Cl_auth()
         cl_callback = Cl_callback()
 
@@ -615,14 +615,14 @@ def uc5_01(request):
         error_text = 'An error has been occured with the API Calls. Please, contact the System Administrador (Error_code: LLPDS)'
 
         try:
-            assert(sessionExists(request, _UUID))
-            assert(sessionValid(request, _UUID))
+            assert(sessionExists(_UUID))
+            assert(sessionValid(_UUID))
         except BaseException:
             if (Settings.DEBUG):
                 print('DEBUG-uc5_01-GEN-001: Error assert session exists or valid')
             return 'NO_SESSION', 401
 
-        cl_session = sessionControl(request, _UUID)
+        cl_session = sessionControl(_UUID)
         cl_vcissuing = Cl_vcissuing()
         cl_callback = Cl_callback()
         cl_list = Cl_list()
@@ -747,14 +747,14 @@ def uc6_01(request):
         error_text = 'An error has been occured with the API Calls. Please, contact the System Administrador (Error_code: LLPDS)'
 
         try:
-            assert(sessionExists(request, _UUID))
-            assert(sessionValid(request, _UUID))
+            assert(sessionExists(_UUID))
+            assert(sessionValid(_UUID))
         except BaseException:
             if (Settings.DEBUG):
                 print('DEBUG-uc6_01-DRV-001: Error assert session exists or valid')
             return 'NO_SESSION', 401
 
-        cl_session = sessionControl(request, _UUID)
+        cl_session = sessionControl(_UUID)
         cl_ident = Cl_ident()
         cl_callback = Cl_callback()
 
@@ -834,14 +834,14 @@ def uc7_01(request):
         error_text = 'An error has been occured with the API Calls. Please, contact the System Administrador (Error_code: IRE)'
 
         try:
-            assert(sessionExists(request, _UUID))
-            assert(sessionValid(request, _UUID))
+            assert(sessionExists(_UUID))
+            assert(sessionValid(_UUID))
         except BaseException:
             if (Settings.DEBUG):
                 print('DEBUG-uc7_01-IRE-001: Error assert session exists or valid')
             return error_text, 401
 
-        cl_session = sessionControl(request, _UUID)
+        cl_session = sessionControl(_UUID)
         cl_ident = Cl_ident()
         cl_callback = Cl_callback()
 
