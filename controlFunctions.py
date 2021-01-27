@@ -1,14 +1,29 @@
 from .utils.api import *
 from django.http import *
 from django.core.handlers.wsgi import WSGIRequest
+from .utils import api_settings as Settings
 import datetime
 import uuid
-from .utils import api_settings as Settings
 import jwt
+import json
+import redis
 
 # Dictionary with the access_token or ID, and timestamp value for every
 # user's session in the system
-user_sessions = {}
+class user_session:
+    redis_connection = None
+    def __init__(redis_connection=redis.Redis(host='redis')):
+        self.redis_connection = redis_connection
+
+    def set(key, dictionary):
+        # We always save dictionaries as JSON objects
+        return self.redis_connection.set(key, json.dumps(dictionary))
+
+    def get(key):
+        # We always save dictionaries as JSON objects, so ...
+        return json.loads(self.redis_connection.get(key))
+
+user_sessions = user_session()
 
 # MAX TIME (in seconds) for a user's session to be valid in the system
 SESSION_THRESHOLD = 300
