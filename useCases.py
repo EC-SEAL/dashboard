@@ -147,6 +147,10 @@ def uc1_02(request):
             _UUID)
         try:
             assert(r_callback.status_code == 200)
+            print(Settings.Prod.SEAL_ENDPOINT +
+                  '/tokenValidate=' +
+                  _UUID)
+            
         except BaseException:
             if (Settings.DEBUG):
                 print('DEBUG-uc1_02-LLPDS-002: Error assert callback response')
