@@ -140,16 +140,15 @@ def uc1_02(request):
             print('DEBUG-uc1_02-LLPDS-001: sessionId: ', cl_session.sessionID)
 
         # CLBK
+        cl_url = '{0}/tokenValidate={1}'.format(
+                Settings.Prod.SEAL_ENDPOINT,
+                _UUID)
+        print(cl_url)
         r_callback = cl_callback.callback(
             cl_session.sessionID,
-            Settings.Prod.SEAL_ENDPOINT +
-            '/tokenValidate=' +
-            _UUID)
+            cl_url)
         try:
             assert(r_callback.status_code == 200)
-            print(Settings.Prod.SEAL_ENDPOINT +
-                  '/tokenValidate=' +
-                  _UUID)
             
         except BaseException:
             if (Settings.DEBUG):
