@@ -21,7 +21,9 @@ class user_session:
 
     def get(self, key):
         # We always save dictionaries as JSON objects, so ...
-        return json.loads(self.redis_connection.get(key))
+        result = self.redis_connection.get(key)
+        if result == None: return None
+        return json.loads(result)
 
 user_sessions = user_session()
 
