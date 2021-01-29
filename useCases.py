@@ -153,7 +153,7 @@ def uc1_02(request):
             
         except BaseException:
             if (Settings.DEBUG):
-                print('DEBUG-uc1_02-LLPDS-002: Error assert callback response')
+                print('DEBUG-uc1_02-LLPDS-002: Error assert callback response ({})'.format(r_callback.status_code))
             return error_text, 404
 
         # PLOD
