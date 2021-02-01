@@ -143,7 +143,6 @@ def uc1_02(request):
         cl_url = '{0}/tokenValidate={1}'.format(
                 Settings.Prod.SEAL_ENDPOINT,
                 _UUID)
-        print(cl_url)
         r_callback = cl_callback.callback(
             cl_session.sessionID,
             cl_url)

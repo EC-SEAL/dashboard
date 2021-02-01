@@ -12,7 +12,7 @@ import redis
 # user's session in the system
 class user_session:
     redis_connection = None
-    def __init__(self, redis_connection=redis.Redis(host='redis')):
+    def __init__(self, redis_connection=redis.Redis(host=Settings.Prod.REDIS)):
         self.redis_connection = redis_connection
 
     def set(self, key, dictionary):

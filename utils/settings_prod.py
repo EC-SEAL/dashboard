@@ -10,6 +10,8 @@ if not USING_DOCKER:
     load_dotenv()
 
 """Prod Settings global consts"""
+REDIS = os.environ.get('REDIS', '')
+
 SEAL_ENDPOINT = os.environ.get('SEAL_ENDPOINT', '')
 
 USE_PROXY = True if (os.environ.get('USE_PROXY', 'False') == 'True') else False
