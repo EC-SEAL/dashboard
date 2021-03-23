@@ -646,6 +646,13 @@ def uc5_01(request):
             return error_text, 404
 
         vcDefinition_list = cl_list.getCollection('vcDefinitions').json()
+
+        ## Temporal Quick Fix for adding 'eidas-edugain' to the vcDefinitions moduleIDs
+        print(vcDefinition_list)
+        vcDefinition_list.append({ 'eidas-edugain': {} })
+        print(vcDefinition_list)
+        ## end TQF
+
         try:
             assert(vcDefinition_list)
             assert(_moduleID.lower() in [list(vcDefinition.keys())[
@@ -653,7 +660,7 @@ def uc5_01(request):
 
             # filter(lambda person: person['name'] == 'Pam', people)
             #identityA = list(filter(lambda identity: identity['data']['id'] == _datasetId_A, id_list))
-
+            
             _vcDefinition = list(
                 filter(
                     lambda vc_Definition: list(
@@ -667,15 +674,24 @@ def uc5_01(request):
                 print('DEBUG-uc5_01-GEN-004: Error assert VC Definition list')
             return error_text, 404
 
-        identities = uc0_02(_UUID)
+        # ## FIX for allowing users to request a VC for identities the have not yet.
+        # identities = uc0_02(_UUID)
 
-        try:
-            assert(identities)
-            assert(_moduleID in identities.get('uniqueProviders'))
-        except BaseException:
-            if (Settings.DEBUG):
-                print('DEBUG-uc5_01-GEN-004: Error no identity exists for the module')
-            return 'NO_IDENTITY', 401
+        # try:
+        #     assert(identities)
+        #     ## Temporal Quick Fix for adding 'eidas-edugain' to the vcDefinitions moduleIDs
+        #     print('_moduleID: ', _moduleID)
+        #     if _moduleID == 'eIDAS-eduGAIN':
+        #         _moduleID = 'linkedID'
+        #         print('identities_unique_prov: ', identities.get('uniqueProviders'))
+        #     ## end TQF
+        #     assert(_moduleID in identities.get('uniqueProviders'))
+        # except BaseException:
+        #     if (Settings.DEBUG):
+        #         print('DEBUG-uc5_01-GEN-004: Error no identity exists for the module')
+        #     return 'NO_IDENTITY', 401
+        # ## END FIX
+
 
         # TO-DO: WIP
         #       Cambiar parámetros de entrada función generation (quitar _vcDefinition)
@@ -726,7 +742,7 @@ def uc5_01(request):
         return HttpResponse('ModuleID not found in the request', status=404)
 
     if ((parametro_http_moduleID == 'eIDAS' or parametro_http_moduleID ==
-         'eduGAIN' or parametro_http_moduleID == 'eMRTD') and (len(parametro_http_UUID) == 32)):
+         'eduGAIN' or parametro_http_moduleID == 'eMRTD' or parametro_http_moduleID == 'eIDAS-eduGAIN') and (len(parametro_http_UUID) == 32)):
         response_text, status_code = generation(
             parametro_http_UUID, parametro_http_moduleID, parametro_http_SSIId)
         return HttpResponse(response_text, status=status_code)
