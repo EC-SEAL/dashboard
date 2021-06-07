@@ -214,6 +214,17 @@ class Cl_ident:
                             "datasetA": datasetA,
                             "datasetB": datasetB})
 
+                elif data[identity]['data'].get('type') == 'eMRTD':
+
+                    identities_list.append(
+                        {
+                            "id": data[identity]['data'].get('id'),
+                            "provider": data[identity]['data'].get('type'),
+                            "loa": data[identity]['data'].get('loa'),
+                            "issued": data[identity]['data'].get('issued'),
+                            "expiration": data[identity]['data'].get('expiration'),
+                            "attributes": data[identity]['data'].get('attributes')})                            
+
             providers_list = list(identity.get('provider')
                                   for identity in identities_list)
             #['eIDAS', 'eduGAIN', 'eduGAIN', 'eduGAIN']

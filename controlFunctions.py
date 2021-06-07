@@ -28,7 +28,7 @@ class user_session:
 user_sessions = user_session()
 
 # MAX TIME (in seconds) for a user's session to be valid in the system
-SESSION_THRESHOLD = 300
+SESSION_THRESHOLD = 600
 
 
 # Return a new type 4 UUID as string (32 char)

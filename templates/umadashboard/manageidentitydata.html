@@ -42,6 +42,14 @@
 
           {% endif %}
 
+          {% if provider == 'eMRTD' %}
+
+            <li role="presentation" class="tab-pane">
+              <a href="#eMRTD" aria-controls="eMRTD" role="tab" data-toggle="tab">eMRTD</a>
+            </li>
+
+          {% endif %}          
+
           {% if provider == 'derivedID' %}
 
             <li role="presentation" class="tab-pane">
@@ -177,6 +185,63 @@
           <!-- FIN {{identity.provider}} eduGAIN -->
 
         </div>    
+
+        <div role="tabpanel" class="tab-pane" id="eMRTD">
+
+          <div class="clear-fix">&nbsp;</div>
+
+          <!-- INI {{identity.provider}} eMRTD -->
+          <div class="list-group">
+
+            {% if identities %}
+
+              {% for identity in identities.identitiesList %}
+              
+                {% if identity.provider == 'eMRTD' %}
+
+                  <span class="list-group-item vista" visibility="visible">
+                    
+                    <h4 class="list-group-item-heading">
+
+                      <strong class="titulo">ID: {{identity.id}} &nbsp; </strong>
+
+                      <button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
+                      Delete</button>
+                      
+                    </h4>                 
+                    
+                    <span class="list-group-item-text"><br>
+      
+                      <p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
+                      
+                      {% for element in identity.attributes  %}
+                        
+                        <p><b>{{element.friendlyName}}:&nbsp;</b>
+
+                            {% for value in element.values %}
+
+                                <b>{{value}}</b>&nbsp;&nbsp;
+                              
+                            {% endfor %}
+
+                        </p>
+                      
+                      {% endfor %}
+
+                    </span>
+
+                  </span>
+                          
+                {% endif %}
+
+              {% endfor %}
+
+            {% endif %}
+
+          </div>
+          <!-- FIN {{identity.provider}} eMRTD -->
+
+        </div>
 
         <div role="tabpanel" class="tab-pane" id="derivedID">
           
