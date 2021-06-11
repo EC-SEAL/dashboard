@@ -1,9 +1,9 @@
 """ APIGatewayClient Functions """
 
 import json
-import os
 import requests
 from . import api_settings as Settings
+from urllib.parse import unquote
 
 """
 Class for the API methods:
@@ -157,7 +157,7 @@ class Cl_ident:
 
                     identities_list.append(
                         {
-                            "id": data[identity]['data'].get('id'),
+                            "id": unquote(data[identity]['id']),
                             "provider": data[identity]['data'].get('type'),
                             "loa": data[identity]['data'].get('loa'),
                             "issued": data[identity]['data'].get('issued'),
@@ -168,7 +168,7 @@ class Cl_ident:
 
                     identities_list.append(
                         {
-                            "id": data[identity]['data'].get('id'),
+                            "id": unquote(data[identity]['id']),
                             "provider": data[identity]['data'].get('type'),
                             "loa": data[identity]['data'].get('loa'),
                             "issued": data[identity]['data'].get('issued'),
@@ -179,7 +179,7 @@ class Cl_ident:
 
                     identities_list.append(
                         {
-                            "id": data[identity]['data'].get('id'),
+                            "id": unquote(data[identity]['id']),
                             "provider": data[identity]['data'].get('type'),
                             "loa": data[identity]['data'].get('loa'),
                             "issued": data[identity]['data'].get('issued'),
@@ -206,7 +206,7 @@ class Cl_ident:
 
                     identities_list.append(
                         {
-                            "id": data[identity]['data'].get('id'),
+                            "id": unquote(data[identity]['id']),
                             "provider": data[identity]['data'].get('type'),
                             "lloa": data[identity]['data'].get('lloa'),
                             "issued": data[identity]['data'].get('issued'),
@@ -218,7 +218,7 @@ class Cl_ident:
 
                     identities_list.append(
                         {
-                            "id": data[identity]['data'].get('id'),
+                            "id": unquote(data[identity]['id']),
                             "provider": data[identity]['data'].get('type'),
                             "loa": data[identity]['data'].get('loa'),
                             "issued": data[identity]['data'].get('issued'),
