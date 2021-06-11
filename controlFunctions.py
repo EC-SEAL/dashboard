@@ -1,6 +1,7 @@
 from .utils.api import *
 from django.http import *
 from django.core.handlers.wsgi import WSGIRequest
+from django.shortcuts import render
 from .utils import api_settings as Settings
 import datetime
 import uuid
@@ -316,12 +317,18 @@ def tokenControl(request, UUID):
                 # *********************
                 assert(_crearTokenFlag(UUID, result))
 
-            return HttpResponse(status=200)
+            #return HttpResponse(status=200)
+            return render(request,
+                  'umadashboard/callback.html',
+                  {'result': 200,})
 
         except BaseException:
             print('ERROR-tC-001: Error token validation exception')
             # TO-DO: Return a FAILURE html
-            return HttpResponse(status=404)
+            #return HttpResponse(status=404)
+            return render(request,
+                  'umadashboard/callback.html',
+                  {'result': 404,})
 
     else:
         try:
@@ -337,11 +344,18 @@ def tokenControl(request, UUID):
             # *********************
             assert(_crearTokenFlag(UUID, result))
 
-            return HttpResponse(status=200)
+            #return HttpResponse(status=200)
+            return render(request,
+                  'umadashboard/callback.html',
+                  {'result': 200,})
+                  
         except BaseException:
             print('ERROR-tC-001: Error token validation exception')
             # TO-DO: Return a FAILURE html
-            return HttpResponse(status=404)
+            #return HttpResponse(status=404)
+            return render(request,
+                  'umadashboard/callback.html',
+                  {'result': 404,})
 
 
 """

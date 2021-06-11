@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+{% block title %}Callback redirection{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+  <!-- <div class="panel panel-default">
+    <div class="heading">
+      <span class="col-md-5 text-left"><h4>&nbsp;&nbsp;Identity Data in Storage</h4></span>
+    </div>
+    <div class="clear-fix">&nbsp;</div> -->
+
+    {% if result == 200 %}
+      
+      <div class="tex-center">
+        <br>
+        <h3>Your request have been processed successfully</h3>
+        <h3>Please close this page and return to the application page</h3>
+        <br>
+        <br>
+        <!-- <button type="button" class="btn btn-success" title="Close this page" alt="Succesful request" onclick="closePage();">Close this page</button>
+        <br>
+        <br>
+        <p>This page will be closed automatically in 5 seconds...</p> -->
+        <br>
+      </div>
+       
+      {% else %}
+
+      <div class="tex-center">
+        <br>
+        <h3>There have been a problem processing your request</h3>
+        <h3>Please close this page and return to the application page</h3>
+        <br>
+        <br>
+        <!-- <button type="button" class="btn btn-danger" title="Close this page" alt="Failed request" onclick="closePage();">Close this page</button>
+        <br>
+        <br>
+        <p>This page will be closed automatically in 5 seconds...</p> -->
+        <br>
+      </div>
+
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript_pie %}
+   {{block.super}}
+    <script nonce="{{settings.VARIABLE_NONCE_CSP}}">
+
+        // function closePage(){
+
+        //     window.close();
+
+        // }
+
+        // $(document).ready(function() {
+            
+        //     setTimeout(function(){closePage();}, 5000);
+
+        // });
+
+    </script>
+{% endblock %}
