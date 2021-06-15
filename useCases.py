@@ -6,6 +6,12 @@ from .utils import api_settings as Settings
 
 import json
 
+from urllib.parse import unquote
+
+import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="UTF-8")
+
 """
     UC0.01
 
@@ -890,14 +896,8 @@ def uc7_01(request):
                 id_list[index].update({'data': result_data})
 
             # filter(lambda person: person['name'] == 'Pam', people)
-            identityA = list(
-                filter(
-                    lambda identity: identity['data']['id'] == _datasetId_A,
-                    id_list))
-            identityB = list(
-                filter(
-                    lambda identity: identity['data']['id'] == _datasetId_B,
-                    id_list))
+            identityA = list(filter(lambda identity: unquote(identity['id']) == _datasetId_A, id_list))
+            identityB = list(filter(lambda identity: unquote(identity['id']) == _datasetId_B, id_list))
 
             assert(len(identityA) > 0 and len(identityB) > 0)
 
