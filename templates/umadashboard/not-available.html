@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+{% block title %}Service unavailable{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+
+<h2>This service is not available for the moment. Please try again in a few minutes.</h2>
+
+</div>
+{% endblock %}
+
+{% block javascript_pie %}
+   {{block.super}}
+    <script nonce="{{settings.VARIABLE_NONCE_CSP}}">
+
+        // function closePage(){
+
+        //     window.close();
+
+        // }
+
+        // $(document).ready(function() {
+            
+        //     setTimeout(function(){closePage();}, 5000);
+
+        // });
+
+    </script>
+{% endblock %}
