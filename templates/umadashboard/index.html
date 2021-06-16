@@ -840,18 +840,20 @@
 		});
 
 	    // Global variables
-		window.globalInterval;
-		window.watchDogInterval;
+		// window.globalInterval;
+		// window.watchDogInterval;
+
+		window.intervalWindow;
 		window.currentWindow;
 
-		window.intervalTimerValue = 1500;   // 3* 1000 = 3 * 1 sec(ms) = 3 sec -> to 1.5 sec
-		window.watchdogTimerValue = 600000; // 10 * 60000 = 10 * 1 min(ms) = 10 min
+		// window.intervalTimerValue = 1500;   // 3* 1000 = 3 * 1 sec(ms) = 3 sec -> to 1.5 sec
+		// window.watchdogTimerValue = 600000; // 10 * 60000 = 10 * 1 min(ms) = 10 min
 
 		// Open externatl (tab) window with a GET request
 		function displaySubwindowGET_(address, msToken) {
 			const url = address + '?msToken=' + msToken;
 
-			return window.open(url, "connectWindow", "width=700,height=700,menubar=0,location=yes,resizable=0,scrollbars=0,status=1");
+			window.currentWindow = window.open(url, "connectWindow", "width=700,height=700,menubar=0,location=yes,resizable=0,scrollbars=0,status=1");
 		}
 
 		function displaySubwindowPOST_(address, msToken) {
@@ -860,16 +862,19 @@
 			document.getElementById("GenericForm").action = address;
 			f.msToken.value = msToken;
 
-			let externalWindow =  window.open('', 'Generic-window', "width=700,height=700,menubar=0,location=yes,resizable=0,scrollbars=0,status=1");
+			window.currentWindow =  window.open('', 'Generic-window', "width=700,height=700,menubar=0,location=yes,resizable=0,scrollbars=0,status=1");
 			f.submit();
-
-			return externalWindow
-
 		}
 
 		function popupClosingAction() {
-			alert('About to refresh');
-			window.location.reload();
+
+			window.intervalWindow = setInterval(function(){
+				if(window.currentWindow.closed) {
+					console.log('cerrando');
+					clearInterval(window.intervalWindow);
+					window.location.reload();
+				}
+			}, 100);
 		}
 
 		function toggleLinkSelectorRequestButton() {
@@ -906,15 +911,18 @@
 			function getField(id, label) {
 				var value = "";
 
-				id.attributes.forEach(function(item) {
+				if (id.attributes) {
 
-					if (item.friendlyName.toLowerCase() == label.toLowerCase()) {
-						value = " - " + item.values[0];
-					}
+					id.attributes.forEach(function(item) {
 
-				});
+						if (item.friendlyName.toLowerCase() == label.toLowerCase()) {
+							value = " - " + item.values[0];
+						}
+					});
+				}
 
 				return value;
+	
 			}
 
 			function setOptions(selectionId) {
@@ -923,24 +931,27 @@
 
 				idList.uniqueProviders.forEach(function(Provider) {
 
-					var newGroupOption = document.createElement("optgroup");
-					newGroupOption.label = Provider;
+					if (Provider != 'derivedID' && Provider != 'linkedID'){
 
-					idList.identitiesList.forEach(function(Identity) {
+						var newGroupOption = document.createElement("optgroup");
+						newGroupOption.label = Provider;
 
-						if (Identity.provider == Provider) {
+						idList.identitiesList.forEach(function(Identity) {
 
-							var newOption = document.createElement("option");
+							if (Identity.provider == Provider) {
 
-							newOption.label = Identity.id.toString() + getField(Identity, "givenName");
-							newOption.value = Identity.id;
+								var newOption = document.createElement("option");
 
-							newGroupOption.appendChild(newOption);
-						}
+								newOption.label = Identity.id.toString() + getField(Identity, "givenName");
+								newOption.value = Identity.id;
 
-					});
+								newGroupOption.appendChild(newOption);
+							}
 
-					dynamicSelect.appendChild(newGroupOption);
+						});
+
+						dynamicSelect.appendChild(newGroupOption);
+					}
 				});
 
 			}
@@ -961,13 +972,11 @@
 
 			const url = "http://localhost/api/v1/decentralized/authenticate";
 
-			const response = await fetch(url, {method: 'POST', credentials: 'include'})
+			const response = await fetch(url, {method: 'POST', credentials: 'include'});
 
 			if (response.status == 200) {
 
 				const response_json = await response.json();
-
-				console.log(response_json);
 
 				let response_attributes = response_json['content']['application/json'];
 
@@ -1000,17 +1009,13 @@
 
 				const response_json = await response.json();
 
-				console.log(response_json);
-
 				let response_attributes = response_json['content']['application/json'];
 
 				let address = response_attributes['address']['schema']['value'];
 				let msToken = response_attributes['msToken']['schema']['value'];
 
-				let externalWindow = displaySubwindowGET_(address, msToken);
-				externalWindow.onbeforeunload = function () {
-						location.reload();
-					};
+				displaySubwindowGET_(address, msToken);
+				popupClosingAction();
 
 			} else if (response.status == 401) {
 
@@ -1034,8 +1039,6 @@
 			if (response.status == 200) {
 
 				const response_json = await response.json();
-
-				console.log(response_json);
 
 				let response_attributes = response_json['content']['application/json'];
 
@@ -1067,24 +1070,19 @@
 			let data = new FormData()
 			data.append("moduleID", agent);
 
-
 			const response = await fetch(url, {method: 'POST', credentials: 'include', body: data})
 			
 			if (response.status == 200) {
 
 				const response_json = await response.json();
 
-				console.log(response_json);
-
 				let response_attributes = response_json['content']['application/json'];
 
 				let address = response_attributes['address']['schema']['value'];
 				let msToken = response_attributes['msToken']['schema']['value'];
 
-				let externalWindow = displaySubwindowPOST_(address, msToken);
-				externalWindow.onbeforeunload = function () {
-						location.reload();
-					};
+				displaySubwindowPOST_(address, msToken);
+				popupClosingAction();
 			
 			} else if (response.status == 401) {
 
@@ -1107,24 +1105,19 @@
 			let data = new FormData()
 			data.append("moduleID", agent);
 
-
 			const response = await fetch(url, {method: 'POST', credentials: 'include', body: data})
 
 			if (response.status == 200) {
 
 				const response_json = await response.json();
 
-				console.log(response_json);
-
 				let response_attributes = response_json['content']['application/json'];
 
 				let address = response_attributes['address']['schema']['value'];
 				let msToken = response_attributes['msToken']['schema']['value'];
 
-				let window = displaySubwindowPOST_(address, msToken);
-				externalWindow.onbeforeunload = function () {
-						location.reload();
-					};
+				displaySubwindowPOST_(address, msToken);
+				popupClosingAction();
 
 			} else if (response.status == 401) {
 
@@ -1147,11 +1140,8 @@
 			let data = new FormData()
 			data.append("moduleID", agent);
 
-
 			const response = await fetch(url, {method: 'POST', credentials: 'include', body: data})
 			const response_json = await response.json();
-
-			console.log(response_json);
 
 			let response_attributes = response_json['content']['application/json'];
 
@@ -1180,7 +1170,6 @@
 				if (identities.uniqueProviders.length > 0) {
 
 					fillSelector_(identities, agent);
-					//showSelector();
 
 				} else {
 
@@ -1217,24 +1206,20 @@
 			data.append("identityIDa", identityIDa);
 			data.append("identityIDb", identityIDb);
 
-
 			const response = await fetch(url, {method: 'POST', credentials: 'include', body: data})
 			
 			if (response.status == 200) {
 
 				const response_json = await response.json();
 
-				console.log(response_json);
 
 				let response_attributes = response_json['content']['application/json'];
 
 				let address = response_attributes['address']['schema']['value'];
 				let msToken = response_attributes['msToken']['schema']['value'];
 
-				let externalWindow = displaySubwindowPOST_(address, msToken);
-				externalWindow.onbeforeunload = function () {
-						location.reload();
-					};
+				displaySubwindowPOST_(address, msToken);
+				popupClosingAction();
 			
 			} else if (response.status == 401) {
 
