@@ -1204,8 +1204,48 @@
 		}
 
 		async function linkID(agent) {
-			alert("LinkID with agent: " + agent);
+			//alert("LinkID with agent: " + agent);
 
+			const url = "http://localhost/api/v1/identity/link";
+
+			let data = new FormData()
+			data.append("moduleID", agent);
+
+			let identityIDa = document.getElementById('datasetIDa').value
+			let identityIDb = document.getElementById('datasetIDb').value
+
+			data.append("identityIDa", identityIDa);
+			data.append("identityIDb", identityIDb);
+
+
+			const response = await fetch(url, {method: 'POST', credentials: 'include', body: data})
+			
+			if (response.status == 200) {
+
+				const response_json = await response.json();
+
+				console.log(response_json);
+
+				let response_attributes = response_json['content']['application/json'];
+
+				let address = response_attributes['address']['schema']['value'];
+				let msToken = response_attributes['msToken']['schema']['value'];
+
+				let externalWindow = displaySubwindowPOST_(address, msToken);
+				externalWindow.onbeforeunload = function () {
+						location.reload();
+					};
+			
+			} else if (response.status == 401) {
+
+				alert("Your session have been expired, you will be redirected to a new one.")
+				location.reload()
+
+			} else {
+
+				alert("Uncontrolled error!?")
+
+			}
 
 		}
 
