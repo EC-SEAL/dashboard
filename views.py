@@ -33,7 +33,7 @@ def index(request):
             UUID = getUUID()
             assert(UUID != 'UUID_ERROR')
 
-            cl_session = sessionControl(UUID)
+            cl_session = sessionControl(UUID) 
             assert(cl_session.sessionID != None)
 
             response.set_signed_cookie('UUID', UUID)
