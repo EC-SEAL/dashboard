@@ -11,7 +11,7 @@ urlpatterns = [
 
     # re_path(r'^tokenFlag=(?P<UUID>[a-z0-9]{32})$', csrf_exempt(controlFunctions.tokenFlag)),
     # re_path(r'^identitymanager/tokenFlag=(?P<UUID>[a-z0-9]{32})$', csrf_exempt(controlFunctions.tokenFlag)),
-    # re_path(r'^tokenValidate=(?P<UUID>[a-z0-9]{32})$', csrf_exempt(controlFunctions.tokenControl)),
+    re_path(r'^tokenValidate=(?P<UUID>[a-z0-9]{32})$', csrf_exempt(controlFunctions.tokenControl)),
 
     # path('loadLocalPDS/', csrf_exempt(useCases.uc1_02)),
     # path('loadCloudPDS/', csrf_exempt(useCases.uc1_03)),
