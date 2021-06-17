@@ -1140,15 +1140,29 @@
 			let data = new FormData()
 			data.append("moduleID", agent);
 
+			
 			const response = await fetch(url, {method: 'POST', credentials: 'include', body: data})
-			const response_json = await response.json();
 
-			let response_attributes = response_json['content']['application/json'];
+			if (response.status == 200) {
 
-			let address = response_attributes['address']['schema']['value'];
-			let msToken = response_attributes['msToken']['schema']['value'];
+				const response_json = await response.json();
 
-			displaySubwindowGET_(address, msToken);
+				let response_attributes = response_json['content']['application/json'];
+
+				let address = response_attributes['address']['schema']['value'];
+				let msToken = response_attributes['msToken']['schema']['value'];
+
+				displaySubwindowGET_(address, msToken);
+
+			} else if (response.status == 401) {
+
+				alert("You need to be authenticated in an identity provoder to derive an ID. Please, try to retrieve an identity first.")
+
+			} else {
+
+				alert("Uncontrolled error!?")
+
+			}
 
 		}
 
