@@ -970,7 +970,7 @@
 		async function SSIconnection(){
 			// alert("SSI connection not established!");
 
-			const url = "http://localhost/api/v1/decentralized/authenticate";
+			const url = "http://seal.uma.es/api/v1/decentralized/authenticate";
 
 			const response = await fetch(url, {method: 'POST', credentials: 'include'});
 
@@ -1001,7 +1001,7 @@
 		async function LoadPDS(agent){
 			// alert("Agent used was " + agent);
 
-			const url = "http://localhost/api/v1/datastore/"+agent+"/load";
+			const url = "http://seal.uma.es/api/v1/datastore/"+agent+"/load";
 
 			const response = await fetch(url, {method: 'POST', credentials: 'include'});
 
@@ -1032,7 +1032,7 @@
 		async function SavePDS(agent){
 			// alert("Agent used was " + agent);
 
-			const url = "http://localhost/api/v1/datastore/"+agent+"/store";
+			const url = "http://seal.uma.es/api/v1/datastore/"+agent+"/store";
 
 			const response = await fetch(url, {method: 'POST', credentials: 'include'})
 
@@ -1065,7 +1065,7 @@
 		async function retrieveID(agent) {
 			// alert("retrieveID");
 
-			const url = "http://localhost/api/v1/identity/retrieve";
+			const url = "http://seal.uma.es/api/v1/identity/retrieve";
 
 			let data = new FormData()
 			data.append("moduleID", agent);
@@ -1100,7 +1100,7 @@
 		async function deriveID(agent) {
 			// alert("deriveID");
 
-			const url = "http://localhost/api/v1/identity/derive";
+			const url = "http://seal.uma.es/api/v1/identity/derive";
 
 			let data = new FormData()
 			data.append("moduleID", agent);
@@ -1135,7 +1135,7 @@
 		async function issueVC(agent) {
 			// alert("issueVC");
 
-			const url = "http://localhost/api/v1/decentralized/vc/issue";
+			const url = "http://seal.uma.es/api/v1/decentralized/vc/issue";
 
 			let data = new FormData()
 			data.append("moduleID", agent);
@@ -1155,7 +1155,7 @@
 		async function LinkSelector(agent){
 
 			// Retrieve identities from API.
-			const url = "http://localhost/api/v1/identity/all/list";
+			const url = "http://seal.uma.es/api/v1/identity/all/list";
 
 			const response = await fetch(url, {method: 'POST', credentials: 'include'})
 			
@@ -1195,7 +1195,7 @@
 		async function linkID(agent) {
 			//alert("LinkID with agent: " + agent);
 
-			const url = "http://localhost/api/v1/identity/link";
+			const url = "http://seal.uma.es/api/v1/identity/link";
 
 			let data = new FormData()
 			data.append("moduleID", agent);
