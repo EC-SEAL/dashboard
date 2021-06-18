@@ -393,18 +393,6 @@
 			</div>
 			 
 		  	{% else %}
-
-			<!-- <ul class="nav nav-tabs" id="myTab" role="tablist">
-				<li class="nav-item" role="presentation">
-					<a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-				</li>
-				<li class="nav-item" role="presentation">
-					<a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
-				</li>
-				<li class="nav-item" role="presentation">
-					<a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
-				</li>
-			</ul> -->
 	  
 			<ul class="nav nav-tabs" id="providertablist" role="tablist">
 	  
@@ -453,12 +441,6 @@
 			  {% endfor %}
 	  
 			</ul>
-			
-			<!-- <div class="tab-content" id="myTabContent">
-				<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-				<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-				<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
-			</div> -->
 	  
 			<div class="tab-content">
 	  
@@ -775,53 +757,6 @@
 
 	</div>
 
-  
-	<!-- <div class="panel panel-info">
-		<div class="panel-heading"><a id="identity-manager-panel-heading"></a>
-			<h3 class="panel-title">Identity Manager</h3>
-		</div>
-		<div class="panel-body">
-
-			<div class="list-group">
-				<a href="manageidentitydata/" id='manage_identity_data' class="list-group-item">
-					<h4 class="list-group-item-heading">Manage Identity Data</h4>
-					<p class="list-group-item-text">It shows the identity data loaded from the storage into session</p>
-				</a>
-			</div>
-
-
-			<div class="list-group">
-				<a href="javascript:void(0)" class="list-group-item" onclick="funcModalWindow('AddID');">
-					<h4 class="list-group-item-heading">Retrieve Identity Data</h4>
-					<p class="list-group-item-text">Here you can select available identity sources</p>
-				</a>
-			</div>
-
-			<div class="list-group">
-				<a href="javascript:void(0)" class="list-group-item" onclick="funcModalWindow('IDRecon');">
-					<h4 class="list-group-item-heading">Identity Reconciliation</h4>
-					<p class="list-group-item-text">It shows a selector of available Identity Reconciliation Module</p>
-				</a>
-			</div>
-
-
-			<div class="list-group">
-				<a href="javascript:void(0)" class="list-group-item" onclick="funcModalWindow('VCIssue');">
-					<h4 class="list-group-item-heading">Issue Verifiable Credentials</h4>
-					<p class="list-group-item-text">It shows the available Verifiable Credential Module</p>
-				</a>
-			</div>
-
-			<div class="list-group">
-				<a href="javascript:void(0)" class="list-group-item" onclick="funcIdDeriv('UUID');">
-					<h4 class="list-group-item-heading">Derive Identifier</h4>
-					<p class="list-group-item-text">Here you can derive a new identifier for your latest retrieved identity</p>
-				</a>
-			</div>
-
-		</div>
-	</div> -->
-
 </div>	
 {% endblock %}
 
@@ -839,9 +774,9 @@
 			}
 		});
 
-	    // Global variables
-		// window.globalInterval;
-		// window.watchDogInterval;
+		//const ENDPOINT = "https://seal.uma.es";
+		const ENDPOINT = "http://localhost";
+
 
 		window.intervalWindow;
 		window.currentWindow;
@@ -850,6 +785,12 @@
 		// window.watchdogTimerValue = 600000; // 10 * 60000 = 10 * 1 min(ms) = 10 min
 
 		// Open externatl (tab) window with a GET request
+		function manageIdentities() {
+
+
+
+		}
+		
 		function displaySubwindowGET_(address, msToken) {
 			const url = address + '?msToken=' + msToken;
 
@@ -970,7 +911,7 @@
 		async function SSIconnection(){
 			// alert("SSI connection not established!");
 
-			const url = "https://seal.uma.es/api/v1/decentralized/authenticate";
+			const url = ENDPOINT + "/api/v1/decentralized/authenticate";
 
 			const response = await fetch(url, {method: 'POST', credentials: 'include'});
 
@@ -1001,7 +942,7 @@
 		async function LoadPDS(agent){
 			// alert("Agent used was " + agent);
 
-			const url = "https://seal.uma.es/api/v1/datastore/"+agent+"/load";
+			const url = ENDPOINT + "/api/v1/datastore/"+agent+"/load";
 
 			const response = await fetch(url, {method: 'POST', credentials: 'include'});
 
@@ -1032,7 +973,7 @@
 		async function SavePDS(agent){
 			// alert("Agent used was " + agent);
 
-			const url = "https://seal.uma.es/api/v1/datastore/"+agent+"/store";
+			const url = ENDPOINT + "/api/v1/datastore/"+agent+"/store";
 
 			const response = await fetch(url, {method: 'POST', credentials: 'include'})
 
@@ -1065,7 +1006,7 @@
 		async function retrieveID(agent) {
 			// alert("retrieveID");
 
-			const url = "https://seal.uma.es/api/v1/identity/retrieve";
+			const url = ENDPOINT + "/api/v1/identity/retrieve";
 
 			let data = new FormData()
 			data.append("moduleID", agent);
@@ -1100,7 +1041,7 @@
 		async function deriveID(agent) {
 			// alert("deriveID");
 
-			const url = "https://seal.uma.es/api/v1/identity/derive";
+			const url = ENDPOINT + "/api/v1/identity/derive";
 
 			let data = new FormData()
 			data.append("moduleID", agent);
@@ -1135,7 +1076,7 @@
 		async function issueVC(agent) {
 			// alert("issueVC");
 
-			const url = "https://seal.uma.es/api/v1/decentralized/vc/issue";
+			const url = ENDPOINT + "/api/v1/decentralized/vc/issue";
 
 			let data = new FormData()
 			data.append("moduleID", agent);
@@ -1169,7 +1110,7 @@
 		async function LinkSelector(agent){
 
 			// Retrieve identities from API.
-			const url = "https://seal.uma.es/api/v1/identity/all/list";
+			const url = ENDPOINT + "/api/v1/identity/all/list";
 
 			const response = await fetch(url, {method: 'POST', credentials: 'include'})
 			
@@ -1208,7 +1149,7 @@
 		async function linkID(agent) {
 			//alert("LinkID with agent: " + agent);
 
-			const url = "https://seal.uma.es/api/v1/identity/link";
+			const url = ENDPOINT + "/api/v1/identity/link";
 
 			let data = new FormData()
 			data.append("moduleID", agent);
@@ -1248,138 +1189,7 @@
 		}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		// -------------------------------------------------------------------------------------------------------------------- Antiguo 
-
-		function funcToggleRequestButton() {
-
-			if(document.getElementById('datasetIDa').value != '0' && document.getElementById('datasetIDb').value != '0') {
-				$('#idSelec-request-button').attr('disabled', false);
-			} else {
-				$('#idSelec-request-button').attr('disabled', true);
-			}
-		}
-
-
-		function funcModalWindow(mode) {
-
-			if (mode == 'AddID') {
-				// Close other modal windows:
-				$('#windowIdRecon').modal('hide');
-				$('#windowIdSelec').modal('hide');
-				$('#windowVCIssue').modal('hide');
-
-				// Show the desired modal window:
-				$('#modal-body-id').attr('style', "height: 150px;");
-				$('#identity-sources-button-error').attr('style', "display: none;");
-
-				$('#identity-sources-select-buttons').attr('style', "display: block;");
-
-				$('#windowAddID').modal('show');
-
-			} else if (mode == 'IDRecon') {
-				// Close other modal windows:
-				$('#windowAddID').modal('hide');
-				$('#windowVCIssue').modal('hide');
-
-				// Config idSelec modal window
-				$('#windowIdSelec').modal('hide');
-
-				$('#idSelec-selector').attr('style', "display: block;");
-				$('#idSelec-error').attr('style', "display: none;");
-				$('#idSelec-request-sent-auto').attr('style', "display: none;");
-				$('#idSelec-request-sent-manual').attr('style', "display: none;");
-				$('#idSelec-request-not-sent').attr('style', "display: none;");
-
-				// Show the desired modal window:
-				$('#modal-body-id').attr('style', "height: 150px;");
-				$('#reconciliation-methods-button-error').attr('style', "display: none;");
-
-				$('#reconciliation-methods-select-buttons').attr('style', "display: block;");
-	
-				$('#windowIdRecon').modal('show');
-
-			} else if (mode == 'VCIssue') {
-
-				// Close other modal windows:
-				$('#windowAddID').modal('hide');
-				$('#windowIdSelec').modal('hide');
-				$('#windowIdRecon').modal('hide');
-
-				// Config VCIssue modal window
-				$('#windowVCIssue').modal('hide');
-
-				// Show the desired modal window:
-				$('#modal-body-id').attr('style', "height: 150px;");
-				$('#vcissuing-methods-button-error').attr('style', "display: none;");
-				$('#vcissuing-identity-button-error').attr('style', "display: none;");				
-				$('#vcissuing-methods-select-buttons').attr('style', "display: block;");
-	
-				$('#windowVCIssue').modal('show');
-
-			} else { // Any other option, error
-				alert('ERROR: Mode not found');
-			
-			}
-
-	    }	// funcModalWindow
-
-
-	    function funcModalWindowPDS(mode) {
-
-			if (mode == 'LOCAL') {
-
-				$('#modal-body-id').attr('style', "height: 150px;");
-				$('#cloud-select-buttons').attr('style', "display: none;"); 
-				$('#local-select-buttons').attr('style', "display: block;");
-				$('#local-button-error').attr('style', "display: none;");
-
-				$('#windowLocalPDS').modal('show');
-
-			} else if (mode == 'CLOUD') {
-
-				$('#modal-body-id').attr('style', "height: 150px;");
-				$('#local-select-buttons').attr('style', "display: none;");
-				$('#cloud-select-buttons').attr('style', "display: block;");
-				$('#cloud-button-error').attr('style', "display: none;");
-
-				$('#windowLocalPDS').modal('show');
-
-			} else { // Any other option, error
-				alert('ERROR');
-
-			}
-
-		}	// funcModalWindowPDS
+		// -------------------------------------------------------------------------------------------------------------------- Old 
 
 
 		function validateFlag(url) {
@@ -1436,645 +1246,7 @@
 		}	// function validateFlag
 		
 
-		function fillSelector(aIdList, aSelector){
 
-			function getField(id, label) {
-				var value = "";
-
-				id.attributes.forEach(function(item) {
-
-					if (item.friendlyName.toLowerCase() == label.toLowerCase()) {
-						value = " - " + item.values[0];
-					}
-
-				});
-
-				return value;
-			}
-
-			var dynamicSelect = document.getElementById(aSelector);
-
-			aIdList.uniqueProviders.forEach(function(Provider) {
-
-				var newGroupOption = document.createElement("optgroup");
-				newGroupOption.label = Provider;
-
-				aIdList.identitiesList.forEach(function(Identity) {
-
-					if (Identity.provider == Provider) {
-
-						var newOption = document.createElement("option");
-
-						newOption.label = Identity.id.toString() + getField(Identity, "givenName");
-						newOption.value = Identity.id;
-
-						newGroupOption.appendChild(newOption);
-
-					}
-
-				});
-	
-				dynamicSelect.appendChild(newGroupOption);
-			});
-
-		} // fillSelector
-
-
-		function cleanSelector(aSelector) {
-
-			$('#'+aSelector).empty().append('<option disabled selected style="display: none" value="0">Select an Identity</option>');
-			$('#idSelec-request-button').attr('disabled', true);
-
-		}
-
-		// The UPorto persistence window is opened
-		function displaySubwindowGET(url) {
-			window.currentWindow = window.open(url, "connectWindow", "width=700,height=700,menubar=0,location=yes,resizable=0,scrollbars=0,status=1");
-			// var md = new MobileDetect(window.navigator.userAgent);
-			// if(md.mobile()!=null){
-			// 	sessionStorage.setItem('userDevice', 'Mobile');
-			// }else{
-			// 	sessionStorage.setItem('userDevice', 'Desktop');
-			// }
-		}
-
-
-		function displaySubwindowPOST(url, token) {
-
-			var f = document.getElementById('GenericForm');
-			document.getElementById("GenericForm").action = url;
-			f.msToken.value = token;
-
-			window.currentWindow = window.open('', 'Generic-window', "width=700,height=700,menubar=0,location=yes,resizable=0,scrollbars=0,status=1");
-			f.submit();
-
-		}
-
-
-		function idSelector(moduleID){
-
-			UUID = sessionStorage.getItem('data');
-
-			if (UUID) {
-
-				var url = 'idSelec?data='+UUID;
-
-					var xmlHttp = new XMLHttpRequest();
-
-					xmlHttp.onreadystatechange = function() { 
-
-						if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-
-							var id_list = xmlHttp.responseText;
-
-							id_list = JSON.parse( id_list )
-
-							if (id_list) {
-								// Identities Selector logic 
-
-								// Identities Selector reset
-								cleanSelector("datasetIDa");
-								cleanSelector("datasetIDb");
-
-								// Identities Selector load process
-								fillSelector(id_list,"datasetIDa");
-								fillSelector(id_list,"datasetIDb");
-
-								// Setup buttons
-								$('#idSelec-request-button').attr('onclick', "funcIdRecon('"+moduleID+"')");
-
-								// Error message is hidden
-								$('#idSelec-error').attr('style', "display: none;");
-
-								// Identities Selector is displayed
-								$('#idSelec-selector').attr('style', "display: block;");
-
-							} else {
-
-								// Error message is displayed (There is no identities to link)
-								$('#idSelec-error').attr('style', "display: block;");
-
-								// Identities Selector is hidden
-								$('#idSelec-selector').attr('style', "display: none;");
-							}
-							
-							// The parent modal window is closed
-							$('#windowIdRecon').modal('hide');
-
-							// Identities Selector modal window is displayed
-							$('#windowIdSelec').modal('show');
-
-						} // == 200
-						
-						if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
-
-							alert('Your session has been expired, please try to authenticate again.')
-							window.location = '{{seal_endpoint}}';	
-
-						} // == 401
-
-						if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
-
-							$('#reconciliation-methods-button-error').attr('style', "display: block;");
-
-							setTimeout(function(){ $('#reconciliation-methods-button-error').attr('style', "display: none;"); }, 2000);
-
-						} // == 404
-
-					}	// onreadystatechange
-
-					xmlHttp.open("GET", url, true); // true for asynchronous
-					xmlHttp.send();
-
-			} else {
-				alert('Your session has been expired, please try to authenticate again.')
-				window.location = '{{seal_endpoint}}';				
-			}
-
-		} // idSelector
-
-		//--------------------------------------------------------------------------------------------------
-
-	    function funcAddID(moduleID) {
-
-			if (window.globalInterval) {
-				window.clearInterval(window.globalInterval)
-				window.clearInterval(window.watchDogInterval)
-			}
-
-			if (window.currentWindow) {
-				window.currentWindow.close()
-			}
-
-			UUID = sessionStorage.getItem('data');
-
-			if (UUID) {
-
-				var url = window.location.href + 'addID?moduleID='+moduleID+'&data='+UUID;
-
-				var xmlHttp = new XMLHttpRequest();
-
-				xmlHttp.onreadystatechange = function() {
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {	
-
-						var params = xmlHttp.responseText.split("&");
-						var address = params[0];
-						var msToken = params[1];
-
-						$('#windowAddID').modal('hide');
-
-						window.globalInterval = window.setInterval(function() { validateFlag("") }, window.intervalTimerValue)
-						window.watchDogInterval = window.setInterval(function() { 
-							if (window.currentWindow) {
-								window.currentWindow.close()
-							}
-							window.clearInterval(window.globalInterval)
-							window.clearInterval(window.watchDogInterval)
-							alert("Timeout has been reached, please try to access again.")
-						}, window.watchdogTimerValue)
-
-						displaySubwindowPOST(address, msToken);
-
-					}	// == 200
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
-
-						alert('Your session has been expired, please try to authenticate again.')
-						window.location = '{{seal_endpoint}}';	
-
-					} // == 401
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
-
-						// Showing error message
-						$('#identity-sources-button-error').attr('style', "display: block;");
-
-						// The message error is displayed for 2 seconds and hidden
-						setTimeout(function(){ $('#identity-sources-button-error').attr('style', "display: none;"); }, 2000);
-					
-					}	// == 404
-
-				}	// onreadystatechange
-
-				xmlHttp.open("GET", url, true); // true for asynchronous
-				xmlHttp.send();	
-
-			} else {
-
-				alert('Your session has been expired, please try to authenticate again.')
-				window.location = '{{seal_endpoint}}';
-
-			}
-
-		}	// funcAddID
-
-
-		function funcIdRecon(moduleID) {
-
-			if (window.globalInterval) {
-				window.clearInterval(window.globalInterval)
-				window.clearInterval(window.watchDogInterval)
-			}
-
-			if (window.currentWindow) {
-				window.currentWindow.close()
-			}
-
-			UUID = sessionStorage.getItem('data');
-			if(UUID){
-
-				var url = 'idRecon/?moduleID='+moduleID+'&data='+UUID;
-
-				var formData = new FormData();
-				formData.append("datasetIDa", document.getElementById('datasetIDa').value);
-				formData.append("datasetIDb", document.getElementById('datasetIDb').value);
-
-				var xmlHttp = new XMLHttpRequest();
-
-				xmlHttp.onreadystatechange = function() {
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {	
-
-						var params = xmlHttp.responseText.split("&");
-						var address = params[0]
-						var msToken = params[1]
-
-						window.globalInterval = window.setInterval(function() { validateFlag("") }, window.intervalTimerValue)
-						window.watchDogInterval = window.setInterval(function() { 
-							if (window.currentWindow) {
-								window.currentWindow.close()
-							}
-							window.clearInterval(window.globalInterval)
-							window.clearInterval(window.watchDogInterval)
-							alert("Timeout has been reached, please try to access again.")
-						}, window.watchdogTimerValue)
-
-						if(moduleID == 'autoSEAL') {
-
-							$('#idSelec-request-sent-auto').attr('style', "display: block;");
-
-						} else if(moduleID == 'manualXYZ') {
-
-							$('#idSelec-request-sent-manual').attr('style', "display: block;");
-						}
-
-						displaySubwindowPOST(address, msToken);
-
-					}	// == 200
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
-
-						alert('Your session has been expired, please try to authenticate again.')
-						window.location = '{{seal_endpoint}}';	
-
-					} // == 401
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
-
-						// Showing the request error message
-						$('#idSelec-request-not-sent').attr('style', "display: block;");
-				
-					}	// == 404
-
-				}	// onreadystatechange
-
-				xmlHttp.open("POST", url, true); // true for asynchronous
-				xmlHttp.send(formData);
-
-				$('#idSelec-selector').attr('style', "display: none;");
-
-			}else {
-
-				alert('Your session has been expired, please try to authenticate again.')
-				window.location = '{{seal_endpoint}}';
-
-			}
-
-		}	// funcIdRecon
-
-
-	    function funcVCIssue(moduleID) {
-
-			if (window.globalInterval) {
-				window.clearInterval(window.globalInterval)
-				window.clearInterval(window.watchDogInterval)
-			}
-
-			if (window.currentWindow) {
-				window.currentWindow.close()
-			}
-
-			UUID = sessionStorage.getItem('data');
-
-			if (UUID) {
-
-				var url = window.location.href + 'vcIssue?moduleID='+moduleID+'&data='+UUID;
-
-				var xmlHttp = new XMLHttpRequest();
-
-				xmlHttp.onreadystatechange = function() {
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {	
-
-						var params = xmlHttp.responseText.split("&");
-						var address = params[0] +'/' + moduleID.toLowerCase();
-						var msToken = params[1];
-
-						$('#windowVCIssue').modal('hide');
-
-						window.globalInterval = window.setInterval(function() { validateFlag("") }, window.intervalTimerValue)
-						window.watchDogInterval = window.setInterval(function() { 
-							if (window.currentWindow) {
-								window.currentWindow.close()
-							}
-							window.clearInterval(window.globalInterval)
-							window.clearInterval(window.watchDogInterval)
-							alert("Timeout has been reached, please try to access again.")
-						}, window.watchdogTimerValue)
-
-						displaySubwindowGET(address+'?msToken='+ msToken);
-
-					}	// == 200
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
-
-						if (xmlHttp.responseText == 'NO_IDENTITY') {
-
-							// Showing error message
-							$('#vcissuing-identity-button-error').attr('style', "display: block;");
-
-							// The message error is displayed for 2 seconds and hidden
-							setTimeout(function(){ $('#vcissuing-identity-button-error').attr('style', "display: none;"); }, 3000);
-
-
-						} else if (xmlHttp.responseText == 'NO_SESSION') {
-
-							alert('Your session has been expired, please try to access again.')
-							window.location = '{{seal_endpoint}}';	
-
-						} else {
-							alert('401 error received, redirecting to access page.')
-							window.location = '{{seal_endpoint}}';	
-						}
-
-					} // == 401
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
-
-						// Showing error message
-						$('#vcissuing-methods-button-error').attr('style', "display: block;");
-
-						// The message error is displayed for 2 seconds and hidden
-						setTimeout(function(){ $('#vcissuing-methods-button-error').attr('style', "display: none;"); }, 2000);
-					
-					}	// == 404
-
-				}	// onreadystatechange
-
-				xmlHttp.open("GET", url, true); // true for asynchronous
-				xmlHttp.send();	
-
-			} else {
-
-				alert('Your session has been expired, please try to authenticate again.')
-				window.location = '{{seal_endpoint}}';
-
-			}
-
-		}	// funcVCIssue
-
-
-		function funcIdDeriv(moduleID) {
-
-			if (window.globalInterval) {
-				window.clearInterval(window.globalInterval)
-				window.clearInterval(window.watchDogInterval)
-			}
-
-			if (window.currentWindow) {
-				window.currentWindow.close()
-			}
-
-			UUID = sessionStorage.getItem('data');
-			if(UUID){
-
-				var url = window.location.href + 'idDeriv?moduleID='+moduleID+'&data='+UUID;
-
-				var xmlHttp = new XMLHttpRequest();
-
-				xmlHttp.onreadystatechange = function() {
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {	
-
-						var params = xmlHttp.responseText.split("&");
-						var address = params[0]
-						var msToken = params[1]
-
-						window.globalInterval = window.setInterval(function() { validateFlag("") }, window.intervalTimerValue)
-						window.watchDogInterval = window.setInterval(function() { 
-							if (window.currentWindow) {
-								window.currentWindow.close()
-							}
-							window.clearInterval(window.globalInterval)
-							window.clearInterval(window.watchDogInterval)
-							alert("Timeout has been reached, please try to access again.")
-						}, window.watchdogTimerValue)
-
-						displaySubwindowGET(address+'?msToken='+ msToken);
-
-					}	// == 200
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
-
-						if (xmlHttp.responseText == 'NO_IDENTITY') {
-
-							// Showing error message
-							alert('Please, try to authenticate first before deriving an identity');
-
-						} else if (xmlHttp.responseText == 'NO_SESSION') {
-
-							alert('Your session has been expired, please try to access again.')
-							window.location = '{{seal_endpoint}}';	
-
-						} else {
-							alert('401 error received, redirecting to access page.')
-							window.location = '{{seal_endpoint}}';	
-						}
-
-					} // == 401
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
-
-						// Showing error message
-						alert('This functionality is currently unavailable.')
-					
-					}	// == 404
-
-				}	// onreadystatechange
-
-				xmlHttp.open("GET", url, true); // true for asynchronous
-				xmlHttp.send();	
-
-			} else {
-
-				alert('Your session has been expired, please try to authenticate again.')
-				window.location = '{{seal_endpoint}}';
-
-			}
-
-
-		}	// funcIdDeriv
-
-
-		function funcLocalStorePDS(moduleID) {
-
-			// The variable for the interval is resetted
-			if (window.globalInterval) {
-				window.clearInterval(window.globalInterval)
-				window.clearInterval(window.watchDogInterval)
-			}
-
-			if (window.currentWindow) {
-				window.currentWindow.close()
-			}
-
-
-			UUID = sessionStorage.getItem('data');
-
-			if (UUID) {
-
-				var url = 'storeLocalPDS?moduleID=' + moduleID + '&data='+UUID;
-
-				var xmlHttp = new XMLHttpRequest();
-
-				xmlHttp.onreadystatechange = function() { 
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-
-						var params = xmlHttp.responseText.split("&");
-						var address = params[0];
-						var msToken = params[1];
-
-						var url_UI_uporto = address + '?msToken=' + msToken;
-
-						$('#windowLocalPDS').modal('hide');
-
-						window.globalInterval = window.setInterval(function() { validateFlag("") }, window.intervalTimerValue)
-						window.watchDogInterval = window.setInterval(function() { 
-								if (window.currentWindow) {
-									window.currentWindow.close()
-								}
-								window.clearInterval(window.globalInterval)
-								window.clearInterval(window.watchDogInterval)
-								alert("Timeout has been reached, please try to access again.")
-						}, window.watchdogTimerValue)
-
-						displaySubwindowGET(url_UI_uporto);
-
-					}
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
-
-						alert('Your session has been expired, please try to access again.')
-						window.location = '{{seal_endpoint}}';	
-
-					} // == 401
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
-
-						$('#local-button-error').attr('style', "display: block;");
-
-						setTimeout(function(){ $('#local-button-error').attr('style', "display: none;"); }, 2000);
-					}
-
-				}	// onreadystatechange
-
-				xmlHttp.open("GET", url, true); // true for asynchronous
-				xmlHttp.send();
-			
-			} else {
-
-				alert('Your session has been expired, please try to access again.')
-				window.location = '{{seal_endpoint}}';
-
-			}
-
-		}	// funcLocalStorePDS
-
-
-		function funcCloudStorePDS(moduleID) {
-
-			if (window.globalInterval) {
-				window.clearInterval(window.globalInterval)
-				window.clearInterval(window.watchDogInterval)
-			}
-
-			if (window.currentWindow) {
-				window.currentWindow.close()
-			}
-
-			UUID = sessionStorage.getItem('data');
-
-			if (UUID) {
-
-				var url = 'storeCloudPDS?moduleID=' + moduleID + '&data='+UUID;
-
-				var xmlHttp = new XMLHttpRequest();
-
-				xmlHttp.onreadystatechange = function() { 
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-
-						var params = xmlHttp.responseText.split("&");
-						var address = params[0];
-						var msToken = params[1];
-
-						var url_UI_uporto = address + '?msToken=' + msToken;
-
-						$('#windowLocalPDS').modal('hide');
-
-						window.globalInterval = window.setInterval(function() { validateFlag("") }, window.intervalTimerValue)
-						window.watchDogInterval = window.setInterval(function() { 
-								if (window.currentWindow) {
-									window.currentWindow.close()
-								}
-								window.clearInterval(window.globalInterval)
-								window.clearInterval(window.watchDogInterval)
-								alert("Timeout has been reached, please try to access again.")
-						}, window.watchdogTimerValue)
-
-						displaySubwindowGET(url_UI_uporto);
-
-					}
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
-
-						alert('Your session has been expired, please try to access again.')
-						window.location = '{{seal_endpoint}}';	
-
-					} // == 401
-
-					if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
-
-						$('#cloud-button-error').attr('style', "display: block;");
-
-						setTimeout(function(){ $('#cloud-button-error').attr('style', "display: none;"); }, 2000);
-					}
-
-				}	// onreadystatechange
-
-				xmlHttp.open("GET", url, true); // true for asynchronous
-				xmlHttp.send();
-			
-			} else {
-
-				alert('Your session has been expired, please try to access again.')
-				window.location = '{{seal_endpoint}}';
-
-			}
-
-		}	// funcCloudStorePDS
 
 	</script>
 {% endblock %}
