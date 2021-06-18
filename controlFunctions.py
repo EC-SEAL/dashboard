@@ -278,7 +278,7 @@ def tokenControl(request, UUID):
     #if request.POST.get('msToken', None):
     if request.POST:
 
-        return HttpResponseRedirect('dashboard/tokenValidate='+UUID)
+        return HttpResponseRedirect('https://seal.uma.es/dashboard/tokenValidate='+UUID)
 
         # try:
         #     token = request.POST.get('msToken')
