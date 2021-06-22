@@ -1411,6 +1411,8 @@
 				let address = response_attributes['address']['schema']['value'];
 				let msToken = response_attributes['msToken']['schema']['value'];
 
+				alert("The result of this action may create a new linkedID only in case this request is approved. The request will be deleted after processed.")
+
 				displaySubwindowPOST_(address, msToken);
 				popupClosingAction();
 			
