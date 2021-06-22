@@ -397,7 +397,14 @@
 			<ul class="nav nav-tabs" id="providertablist" role="tablist">
 	  
 			  {% for provider in identities.uniqueProviders %}
-			  
+
+				<li class="nav-item" role="presentation">
+					<a class="nav-link" id="{{provider}}-tab" role="tab" aria-controls="{{provider}}" aria selected="true" data-bs-toggle="tab" href="#{{provider}}">{{provider}}</a>
+				</li>
+				
+				{% comment %}
+				<!-- Delete in the next code cleaning -->
+
 				{% if provider == 'eIDAS' %}
 	  
 				  <li class="nav-item" role="presentation">
@@ -436,7 +443,8 @@
 					<a class="nav-link" id="linkedID-tab" role="tab" aria-controls="linkedID" aria-selected="false" data-bs-toggle="tab" href="#linkedID">Linked ID</a>
 				  </li>
 	  
-				{% endif %}   
+				{% endif %}  
+				{% endcomment %}
 	  
 			  {% endfor %}
 	  
@@ -444,312 +452,504 @@
 			
 	  
 			<div class="tab-content">
+
+				{% for provider in identities.uniqueProviders %}
+				<div role="tabpanel" class="tab-pane" id="{{provider}}">
 	  
-			  <div role="tabpanel" class="tab-pane" id="eIDAS">
-	  
-				<div class="clear-fix">&nbsp;</div>
-	  
-				<div class="list-group">
-	  
-				  {% if identities %}
-	  
+					<div class="clear-fix">&nbsp;</div>
+		  
+					<div class="list-group">
+		  
 					{% for identity in identities.identitiesList %}
-					
-					  {% if identity.provider == 'eIDAS' %}
-	  
-						<span class="list-group-item vista" visibility="visible">
-						  
-						  <h4 class="list-group-item-heading">
-	  
-							<strong class="titulo">ID: {{identity.id}} &nbsp; </strong>
-	  
-							<button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
-							Delete</button>
+
+						{% if identity.provider == provider %}
+
+							{% if identity.provider == "linkRequest" %}
+
+							<span class="list-group-item vista" visibility="visible">          
 							
-						  </h4>                 
-						  
-						  <span class="list-group-item-text"><br>
-			
-							<p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
-							
-							{% for element in identity.attributes  %}
-							  
-							  <p><b>{{element.friendlyName}}:&nbsp;</b>
-	  
-								  {% for value in element.values %}
-	  
-									  <b>{{value}}</b>&nbsp;&nbsp;
-									
-								  {% endfor %}
-	  
-							  </p>
-							
-							{% endfor %}
-	  
-						  </span>
-	  
-						</span>
+								<h4 class="list-group-item-heading">
+	
+								<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+	
+								<button type="button" class="btn btn-warning btn-sm" title="Delete ID Card" alt="Delete ID Card" onclick="linkResult('autoSEAL', '{{identity.id}}');">
+								Pending: Click to resolve</button>
 								
-					  {% endif %}
-	  
-					{% endfor %}
-	  
-				  {% endif %}
-	  
-				</div>
-	  
-			  </div> 
-	  
-			  <div role="tabpanel" class="tab-pane" id="eduGAIN">
+								</h4>             
+								
+								<span class="list-group-item-text"><br>
 				
-				<div class="clear-fix">&nbsp;</div> 
-	  
-				<div class="list-group">
-	  
-				  {% if identities %}
-	  
-					{% for identity in identities.identitiesList %}
-					
-					  {% if identity.provider == 'eduGAIN' %}
-	  
-						<span class="list-group-item vista" visibility="visible">          
-						  
-						  <h4 class="list-group-item-heading">
-	  
-							<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
-	  
-							<button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
-							Delete</button>
-							
-						  </h4>             
-						  
-						  <span class="list-group-item-text"><br>
-			
-							<p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
-							
-							{% for element in identity.attributes %}
-									  
-								<p><b>{{element.friendlyName}}:</b>&nbsp;
-	  
-									{% for value in element.values %}
-	  
-										<b>{{value}}&nbsp;&nbsp;</b>
-									  
+								<p><i>Issued on {{identity.issued}}  with <b>LLoA: {{identity.lloa}}</b></i></p><br>
+	
+								<p><b>Dataset A:</b></p>
+	
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetA.id}}</b></p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetA.loa}}</b></p>
+								
+									{% for element in identity.datasetA.attributes %}
+												
+										<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											
+											<b>{{element.friendlyName}}:&nbsp;</b>
+	
+											{% for value in element.values %}
+	
+												<b>{{value}}&nbsp;&nbsp;</b>
+												
+											{% endfor %}
+	
+										</p>                               
+									
 									{% endfor %}
-	  
-								</p>                        
-						  
-							{% endfor %}
-	  
-						  </span>
-	  
-						</span>                
-				  
-					  {% endif %}
-				  
+	
+								<p></p>
+	
+								<p><b>Dataset B:</b></p>
+	
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetB.id}}</b></p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetB.loa}}</b></p>
+	
+									{% for element in identity.datasetB.attributes %}
+												
+										<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												
+											<b>{{element.friendlyName}}:&nbsp;</b>
+	
+											{% for value in element.values %}
+	
+												<b>{{value}}&nbsp;&nbsp;</b>
+												
+											{% endfor %}
+	
+										</p>                               
+									
+									{% endfor %}                      
+	
+								</span>
+	
+							</span>
+					
+							{% elif identity.provider == "linkedID" %}
+		
+							<span class="list-group-item vista" visibility="visible">          
+							
+								<h4 class="list-group-item-heading">
+	
+								<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+	
+								<button type="button" class="btn btn-success btn-sm" title="Delete ID Card" alt="Delete ID Card" onclick="">
+								Accepted</button>
+								
+								</h4>             
+								
+								<span class="list-group-item-text"><br>
+				
+								<p><i>Issued on {{identity.issued}}  with <b>LLoA: {{identity.lloa}}</b></i></p><br>
+	
+								<p><b>Dataset A:</b></p>
+	
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetA.id}}</b></p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetA.loa}}</b></p>
+								
+									{% for element in identity.datasetA.attributes %}
+												
+										<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											
+											<b>{{element.friendlyName}}:&nbsp;</b>
+	
+											{% for value in element.values %}
+	
+												<b>{{value}}&nbsp;&nbsp;</b>
+												
+											{% endfor %}
+	
+										</p>                               
+									
+									{% endfor %}
+	
+								<p></p>
+	
+								<p><b>Dataset B:</b></p>
+	
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetB.id}}</b></p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetB.loa}}</b></p>
+	
+									{% for element in identity.datasetB.attributes %}
+												
+										<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												
+											<b>{{element.friendlyName}}:&nbsp;</b>
+	
+											{% for value in element.values %}
+	
+												<b>{{value}}&nbsp;&nbsp;</b>
+												
+											{% endfor %}
+	
+										</p>                               
+									
+									{% endfor %}                      
+	
+								</span>
+	
+							</span>
+
+							{% else %}
+
+							<span class="list-group-item vista" visibility="visible">
+								
+								<h4 class="list-group-item-heading">
+			
+								<strong class="titulo">ID: {{identity.id}} &nbsp; </strong>
+			
+								<button type="button" class="btn btn-success btn-sm" title="Delete ID Card" alt="Delete ID Card" onclick="">
+								Accepted</button>
+								
+								</h4>                 
+								
+								<span class="list-group-item-text"><br>
+				
+								<p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
+								
+								{% for element in identity.attributes  %}
+									
+									<p><b>{{element.friendlyName}}:&nbsp;</b>
+			
+										{% for value in element.values %}
+			
+											<b>{{value}}</b>&nbsp;&nbsp;
+										
+										{% endfor %}
+			
+									</p>
+								
+								{% endfor %}
+			
+								</span>
+			
+							</span>
+
+							{% endif %}
+									
+						{% endif %}
+		
 					{% endfor %}
-	  
-				  {% endif %}
-	  
+		  
+					</div>
+		  
 				</div>
-	  
-			  </div>    
-	  
-			  <div role="tabpanel" class="tab-pane" id="eMRTD">
-	  
+				{% endfor %}
+
+				<!-- ################################ -->
+
+				{% comment %}
+			
+				<div role="tabpanel" class="tab-pane" id="eIDAS">
+
 				<div class="clear-fix">&nbsp;</div>
-	  
+
 				<div class="list-group">
-	  
-				  {% if identities %}
-	  
+
+					{% if identities %}
+
 					{% for identity in identities.identitiesList %}
 					
-					  {% if identity.provider == 'eMRTD' %}
-	  
+						{% if identity.provider == 'eIDAS' %}
+
 						<span class="list-group-item vista" visibility="visible">
-						  
-						  <h4 class="list-group-item-heading">
-	  
+							
+							<h4 class="list-group-item-heading">
+
 							<strong class="titulo">ID: {{identity.id}} &nbsp; </strong>
-	  
+
 							<button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
 							Delete</button>
 							
-						  </h4>                 
-						  
-						  <span class="list-group-item-text"><br>
+							</h4>                 
+							
+							<span class="list-group-item-text"><br>
 			
 							<p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
 							
 							{% for element in identity.attributes  %}
-							  
-							  <p><b>{{element.friendlyName}}:&nbsp;</b>
-	  
-								  {% for value in element.values %}
-	  
-									  <b>{{value}}</b>&nbsp;&nbsp;
+								
+								<p><b>{{element.friendlyName}}:&nbsp;</b>
+
+									{% for value in element.values %}
+
+										<b>{{value}}</b>&nbsp;&nbsp;
 									
-								  {% endfor %}
-	  
-							  </p>
+									{% endfor %}
+
+								</p>
 							
 							{% endfor %}
-	  
-						  </span>
-	  
+
+							</span>
+
 						</span>
 								
-					  {% endif %}
-	  
+						{% endif %}
+
 					{% endfor %}
-	  
-				  {% endif %}
-	  
+
+					{% endif %}
+
 				</div>
-	  
-			  </div>
-	  
-			  <div role="tabpanel" class="tab-pane" id="derivedID">
+
+				</div> 
+
+				<div role="tabpanel" class="tab-pane" id="eduGAIN">
 				
 				<div class="clear-fix">&nbsp;</div> 
-	  
+
 				<div class="list-group">
-	  
-				  {% if identities %}
-	  
+
+					{% if identities %}
+
 					{% for identity in identities.identitiesList %}
 					
-					  {% if identity.provider == 'derivedID' %}
-	  
+						{% if identity.provider == 'eduGAIN' %}
+
 						<span class="list-group-item vista" visibility="visible">          
-						  
-						  <h4 class="list-group-item-heading">
-	  
+							
+							<h4 class="list-group-item-heading">
+
 							<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
-	  
+
 							<button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
 							Delete</button>
 							
-						  </h4>             
-						  
-						  <span class="list-group-item-text"><br>
+							</h4>             
+							
+							<span class="list-group-item-text"><br>
 			
 							<p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
 							
 							{% for element in identity.attributes %}
-									  
+										
 								<p><b>{{element.friendlyName}}:</b>&nbsp;
-	  
-								  {% for value in element.values %}
-	  
-									  <b>{{value}}&nbsp;&nbsp;</b>
-									
-								  {% endfor %}
-	  
+
+									{% for value in element.values %}
+
+										<b>{{value}}&nbsp;&nbsp;</b>
+										
+									{% endfor %}
+
 								</p>                        
-						  
+							
 							{% endfor %}
-	  
-						  </span>
-	  
+
+							</span>
+
 						</span>                
-				  
-					  {% endif %}
-				  
+					
+						{% endif %}
+					
 					{% endfor %}
-	  
-				  {% endif %}
-	  
+
+					{% endif %}
+
 				</div>
-	  
-			  </div>   
-	  
-			  <div role="tabpanel" class="tab-pane" id="linkedID">
-				
-				<div class="clear-fix">&nbsp;</div> 
-	  
+
+				</div>    
+
+				<div role="tabpanel" class="tab-pane" id="eMRTD">
+
+				<div class="clear-fix">&nbsp;</div>
+
 				<div class="list-group">
-	  
-				  {% if identities %}
-	  
+
+					{% if identities %}
+
 					{% for identity in identities.identitiesList %}
 					
-					  {% if identity.provider == 'linkedID' or identity.provider == None %}
-	  
-						<span class="list-group-item vista" visibility="visible">          
-						  
-						  <h4 class="list-group-item-heading">
-	  
-							<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
-	  
+						{% if identity.provider == 'eMRTD' %}
+
+						<span class="list-group-item vista" visibility="visible">
+							
+							<h4 class="list-group-item-heading">
+
+							<strong class="titulo">ID: {{identity.id}} &nbsp; </strong>
+
 							<button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
 							Delete</button>
 							
-						  </h4>             
-						  
-						  <span class="list-group-item-text"><br>
+							</h4>                 
+							
+							<span class="list-group-item-text"><br>
+			
+							<p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
+							
+							{% for element in identity.attributes  %}
+								
+								<p><b>{{element.friendlyName}}:&nbsp;</b>
+
+									{% for value in element.values %}
+
+										<b>{{value}}</b>&nbsp;&nbsp;
+									
+									{% endfor %}
+
+								</p>
+							
+							{% endfor %}
+
+							</span>
+
+						</span>
+								
+						{% endif %}
+
+					{% endfor %}
+
+					{% endif %}
+
+				</div>
+
+				</div>
+
+				<div role="tabpanel" class="tab-pane" id="derivedID">
+				
+				<div class="clear-fix">&nbsp;</div> 
+
+				<div class="list-group">
+
+					{% if identities %}
+
+					{% for identity in identities.identitiesList %}
+					
+						{% if identity.provider == 'derivedID' %}
+
+						<span class="list-group-item vista" visibility="visible">          
+							
+							<h4 class="list-group-item-heading">
+
+							<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+
+							<button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
+							Delete</button>
+							
+							</h4>             
+							
+							<span class="list-group-item-text"><br>
+			
+							<p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
+							
+							{% for element in identity.attributes %}
+										
+								<p><b>{{element.friendlyName}}:</b>&nbsp;
+
+									{% for value in element.values %}
+
+										<b>{{value}}&nbsp;&nbsp;</b>
+									
+									{% endfor %}
+
+								</p>                        
+							
+							{% endfor %}
+
+							</span>
+
+						</span>                
+					
+						{% endif %}
+					
+					{% endfor %}
+
+					{% endif %}
+
+				</div>
+
+				</div>   
+
+				<div role="tabpanel" class="tab-pane" id="linkedID">
+				
+				<div class="clear-fix">&nbsp;</div> 
+
+				<div class="list-group">
+
+					{% if identities %}
+
+					{% for identity in identities.identitiesList %}
+					
+						{% if identity.provider == 'linkedID' or identity.provider == None %}
+
+						<span class="list-group-item vista" visibility="visible">          
+							
+							<h4 class="list-group-item-heading">
+
+							<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+
+							<button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
+							Delete</button>
+							
+							</h4>             
+							
+							<span class="list-group-item-text"><br>
 			
 							<p><i>Issued on {{identity.issued}}  with <b>LLoA: {{identity.lloa}}</b></i></p><br>
-	  
+
 							<p><b>Dataset A:</b></p>
-	  
+
 								<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetA.id}}</b></p>
 								<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetA.loa}}</b></p>
 							
 								{% for element in identity.datasetA.attributes %}
-										  
+											
 									<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									  
+										
 										<b>{{element.friendlyName}}:&nbsp;</b>
-	  
+
 										{% for value in element.values %}
-	  
+
 											<b>{{value}}&nbsp;&nbsp;</b>
-										  
+											
 										{% endfor %}
-	  
+
 									</p>                               
-							  
+								
 								{% endfor %}
-	  
+
 							<p></p>
-	  
+
 							<p><b>Dataset B:</b></p>
-	  
+
 								<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetB.id}}</b></p>
 								<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetB.loa}}</b></p>
-	  
+
 								{% for element in identity.datasetB.attributes %}
-										  
+											
 									<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-										  
+											
 										<b>{{element.friendlyName}}:&nbsp;</b>
-	  
+
 										{% for value in element.values %}
-	  
+
 											<b>{{value}}&nbsp;&nbsp;</b>
-										  
+											
 										{% endfor %}
-	  
+
 									</p>                               
-							  
+								
 								{% endfor %}                      
-	  
-						  </span>
-	  
+
+							</span>
+
 						</span>                
-				  
-					  {% endif %}
-				  
+					
+						{% endif %}
+					
 					{% endfor %}
-	  
-				  {% endif %}
-	  
+
+					{% endif %}
+
 				</div>
-	  
-			  </div> 
-	  
+
+				</div> 
+			
+				{% endcomment %}
 			</div>
 	  
 		  {% endif %}  
@@ -873,7 +1073,7 @@
 
 				idList.uniqueProviders.forEach(function(Provider) {
 
-					if (Provider != 'derivedID' && Provider != 'linkedID'){
+					if (Provider != 'derivedID' && Provider != 'linkedID' && Provider != 'linkRequest'){
 
 						var newGroupOption = document.createElement("optgroup");
 						newGroupOption.label = Provider;
@@ -1189,6 +1389,43 @@
 
 		}
 
+		async function linkResult(agent, identityID){
+			//alert("Link result function status: (agent=" + agent +", id=" + identityID + ") -> not implemented yet");
+
+			const url = ENDPOINT + "/api/v1/identity/link/result";
+
+			let data = new FormData()
+			data.append("moduleID", agent);
+
+			data.append("identityID", identityID);
+
+			const response = await fetch(url, {method: 'POST', credentials: 'include', body: data})
+			
+			if (response.status == 200) {
+
+				const response_json = await response.json();
+
+
+				let response_attributes = response_json['content']['application/json'];
+
+				let address = response_attributes['address']['schema']['value'];
+				let msToken = response_attributes['msToken']['schema']['value'];
+
+				displaySubwindowPOST_(address, msToken);
+				popupClosingAction();
+			
+			} else if (response.status == 401) {
+
+				alert("Your session have been expired, you will be redirected to a new one.")
+				location.reload()
+
+			} else {
+
+				alert("Uncontrolled error!?")
+
+			}
+
+		}
 
 		// -------------------------------------------------------------------------------------------------------------------- Old 
 
