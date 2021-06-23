@@ -6,7 +6,16 @@
 {% block title %}Identity Manager{% endblock %}
 
 {% block content %}
+
+
+<!-- Form for Generic submit -->
+  <form id="GenericForm" method="post" action="" enctype="multipart/form-data" target="Generic-window">
+    <input type="hidden" name="msToken" value="" />
+  </form>
+<!-- END Form for Generic submit -->
+
 <div class="container">
+
   <div class="panel panel-default">
     <div class="heading">
       <span class="col-md-5 text-left"><h4>&nbsp;&nbsp;Identity Data in Storage</h4></span>
@@ -666,7 +675,7 @@
 
         data.append("identityID", identityID);
 
-        const response = await fetch(url, {method: 'POST', body: data})
+        const response = await fetch(url, {method: 'POST', credentials: 'omit', body: data})
         
         if (response.status == 200) {
 
