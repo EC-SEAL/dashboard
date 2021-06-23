@@ -150,88 +150,228 @@ class Cl_ident:
                 result_data = json.loads(data[index].get('data'))
                 data[index].update({'data': result_data})
 
+            dataset_identities = list(filter(lambda identity: identity['type'] == 'dataSet', data))
+
+            linkingRequest_identities = list(filter(lambda identity: identity['type'] == 'linkRequest' and identity['data'].get('lloa', None) == None, data))
+
+            linked_identities = list(filter(lambda identity: identity['type'] == 'linkRequest' and identity['data'].get('lloa', None) != None, data))
+
             identities_list = list()
 
-            for identity in range(0, len(data)):
-                if data[identity]['data'].get('type') == 'eIDAS':
+            for identity in dataset_identities:
+
+                identity_type = identity['data'].get('type')
+
+                if identity_type == 'eIDAS':
 
                     identities_list.append(
                         {
-                            "id": unquote(data[identity]['id']),
-                            "provider": data[identity]['data'].get('type'),
-                            "loa": data[identity]['data'].get('loa'),
-                            "issued": data[identity]['data'].get('issued'),
-                            "expiration": data[identity]['data'].get('expiration'),
-                            "attributes": data[identity]['data'].get('attributes')})
+                            "id": unquote(identity['id']),
+                            "provider": identity['data'].get('type'),
+                            "loa": identity['data'].get('loa'),
+                            "issued": identity['data'].get('issued'),
+                            "expiration": identity['data'].get('expiration'),
+                            "attributes": identity['data'].get('attributes')})
 
-                elif data[identity]['data'].get('type') == 'eduGAIN':
-
-                    identities_list.append(
-                        {
-                            "id": unquote(data[identity]['id']),
-                            "provider": data[identity]['data'].get('type'),
-                            "loa": data[identity]['data'].get('loa'),
-                            "issued": data[identity]['data'].get('issued'),
-                            "expiration": data[identity]['data'].get('expiration'),
-                            "attributes": data[identity]['data'].get('attributes')})
-
-                elif data[identity]['data'].get('type') == 'derivedID':
+                elif identity_type == 'eduGAIN':
 
                     identities_list.append(
                         {
-                            "id": unquote(data[identity]['id']),
-                            "provider": data[identity]['data'].get('type'),
-                            "loa": data[identity]['data'].get('loa'),
-                            "issued": data[identity]['data'].get('issued'),
-                            "expiration": data[identity]['data'].get('expiration'),
-                            "attributes": data[identity]['data'].get('attributes')})
+                            "id": unquote(identity['id']),
+                            "provider": identity['data'].get('type'),
+                            "loa": identity['data'].get('loa'),
+                            "issued": identity['data'].get('issued'),
+                            "expiration": identity['data'].get('expiration'),
+                            "attributes": identity['data'].get('attributes')})
 
-                elif (data[identity]['data'].get('type') == 'linkedID' or data[identity]['data'].get('type') is None):
+                elif identity_type == 'derivedID':
+
+                    identities_list.append(
+                        {
+                            "id": unquote(identity['id']),
+                            "provider": identity['data'].get('type'),
+                            "loa": identity['data'].get('loa'),
+                            "issued": identity['data'].get('issued'),
+                            "expiration": identity['data'].get('expiration'),
+                            "attributes": identity['data'].get('attributes')})
+
+                elif identity_type == 'linkedID':
 
                     datasetA = {
-                        "id": data[identity]['data'].get('datasetA').get('id'),
-                        "provider": data[identity]['data'].get('datasetA').get('type'),
-                        "loa": data[identity]['data'].get('datasetA').get('loa'),
-                        "issued": data[identity]['data'].get('datasetA').get('issued'),
-                        "expiration": data[identity]['data'].get('datasetA').get('expiration'),
-                        "attributes": data[identity]['data'].get('datasetA').get('attributes')}
+                        "id": identity['data'].get('datasetA').get('id'),
+                        "provider": identity['data'].get('datasetA').get('type'),
+                        "loa": identity['data'].get('datasetA').get('loa'),
+                        "issued": identity['data'].get('datasetA').get('issued'),
+                        "expiration": identity['data'].get('datasetA').get('expiration'),
+                        "attributes": identity['data'].get('datasetA').get('attributes')}
 
                     datasetB = {
-                        "id": data[identity]['data'].get('datasetB').get('id'),
-                        "provider": data[identity]['data'].get('datasetB').get('type'),
-                        "loa": data[identity]['data'].get('datasetB').get('loa'),
-                        "issued": data[identity]['data'].get('datasetB').get('issued'),
-                        "expiration": data[identity]['data'].get('datasetB').get('expiration'),
-                        "attributes": data[identity]['data'].get('datasetB').get('attributes')}
+                        "id": identity['data'].get('datasetB').get('id'),
+                        "provider": identity['data'].get('datasetB').get('type'),
+                        "loa": identity['data'].get('datasetB').get('loa'),
+                        "issued": identity['data'].get('datasetB').get('issued'),
+                        "expiration": identity['data'].get('datasetB').get('expiration'),
+                        "attributes": identity['data'].get('datasetB').get('attributes')}
 
                     identities_list.append(
                         {
-                            "id": unquote(data[identity]['id']),
-                            "provider": data[identity]['data'].get('type'),
-                            "lloa": data[identity]['data'].get('lloa'),
-                            "issued": data[identity]['data'].get('issued'),
-                            "expiration": data[identity]['data'].get('expiration'),
+                            "id": unquote(identity['id']),
+                            "provider": identity['data'].get('type'),
+                            "lloa": identity['data'].get('lloa'),
+                            "issued": identity['data'].get('issued'),
+                            "expiration": identity['data'].get('expiration'),
                             "datasetA": datasetA,
                             "datasetB": datasetB})
 
-                elif data[identity]['data'].get('type') == 'eMRTD':
+                elif identity_type == 'eMRTD':
 
                     identities_list.append(
                         {
-                            "id": unquote(data[identity]['id']),
-                            "provider": data[identity]['data'].get('type'),
-                            "loa": data[identity]['data'].get('loa'),
-                            "issued": data[identity]['data'].get('issued'),
-                            "expiration": data[identity]['data'].get('expiration'),
-                            "attributes": data[identity]['data'].get('attributes')})                            
+                            "id": unquote(identity['id']),
+                            "provider": identity['data'].get('type'),
+                            "loa": identity['data'].get('loa'),
+                            "issued": identity['data'].get('issued'),
+                            "expiration": identity['data'].get('expiration'),
+                            "attributes": identity['data'].get('attributes')})
+                
+            for identity in linkingRequest_identities:
+
+                datasetA = {
+                    "id": identity['data'].get('datasetA').get('id'),
+                    "provider": identity['data'].get('datasetA').get('type'),
+                    "loa": identity['data'].get('datasetA').get('loa'),
+                    "issued": identity['data'].get('datasetA').get('issued'),
+                    "expiration": identity['data'].get('datasetA').get('expiration'),
+                    "attributes": identity['data'].get('datasetA').get('attributes')}
+
+                datasetB = {
+                    "id": identity['data'].get('datasetB').get('id'),
+                    "provider": identity['data'].get('datasetB').get('type'),
+                    "loa": identity['data'].get('datasetB').get('loa'),
+                    "issued": identity['data'].get('datasetB').get('issued'),
+                    "expiration": identity['data'].get('datasetB').get('expiration'),
+                    "attributes": identity['data'].get('datasetB').get('attributes')}
+
+                identities_list.append(
+                    {
+                        "id": unquote(identity['id']),
+                        "provider": identity['type'],
+                        "lloa": identity['data'].get('lloa'),
+                        "issued": identity['data'].get('issued'),
+                        "expiration": identity['data'].get('expiration'),
+                        "datasetA": datasetA,
+                        "datasetB": datasetB})
+
+            for identity in linked_identities:
+
+                datasetA = {
+                    "id": identity['data'].get('datasetA').get('id'),
+                    "provider": identity['data'].get('datasetA').get('type'),
+                    "loa": identity['data'].get('datasetA').get('loa'),
+                    "issued": identity['data'].get('datasetA').get('issued'),
+                    "expiration": identity['data'].get('datasetA').get('expiration'),
+                    "attributes": identity['data'].get('datasetA').get('attributes')}
+
+                datasetB = {
+                    "id": identity['data'].get('datasetB').get('id'),
+                    "provider": identity['data'].get('datasetB').get('type'),
+                    "loa": identity['data'].get('datasetB').get('loa'),
+                    "issued": identity['data'].get('datasetB').get('issued'),
+                    "expiration": identity['data'].get('datasetB').get('expiration'),
+                    "attributes": identity['data'].get('datasetB').get('attributes')}
+
+                identities_list.append(
+                    {
+                        "id": unquote(identity['id']),
+                        "provider": "linkedID",
+                        "lloa": identity['data'].get('lloa'),
+                        "issued": identity['data'].get('issued'),
+                        "expiration": identity['data'].get('expiration'),
+                        "datasetA": datasetA,
+                        "datasetB": datasetB})
+
+
+            # for identity in range(0, len(data)):
+            #     if data[identity]['data'].get('type') == 'eIDAS':
+
+            #         identities_list.append(
+            #             {
+            #                 "id": unquote(data[identity]['id']),
+            #                 "provider": data[identity]['data'].get('type'),
+            #                 "loa": data[identity]['data'].get('loa'),
+            #                 "issued": data[identity]['data'].get('issued'),
+            #                 "expiration": data[identity]['data'].get('expiration'),
+            #                 "attributes": data[identity]['data'].get('attributes')})
+
+            #     elif data[identity]['data'].get('type') == 'eduGAIN':
+
+            #         identities_list.append(
+            #             {
+            #                 "id": unquote(data[identity]['id']),
+            #                 "provider": data[identity]['data'].get('type'),
+            #                 "loa": data[identity]['data'].get('loa'),
+            #                 "issued": data[identity]['data'].get('issued'),
+            #                 "expiration": data[identity]['data'].get('expiration'),
+            #                 "attributes": data[identity]['data'].get('attributes')})
+
+            #     elif data[identity]['data'].get('type') == 'derivedID':
+
+            #         identities_list.append(
+            #             {
+            #                 "id": unquote(data[identity]['id']),
+            #                 "provider": data[identity]['data'].get('type'),
+            #                 "loa": data[identity]['data'].get('loa'),
+            #                 "issued": data[identity]['data'].get('issued'),
+            #                 "expiration": data[identity]['data'].get('expiration'),
+            #                 "attributes": data[identity]['data'].get('attributes')})
+
+            #     elif (data[identity]['data'].get('type') == 'linkedID' or data[identity]['data'].get('type') is None):
+
+            #         datasetA = {
+            #             "id": data[identity]['data'].get('datasetA').get('id'),
+            #             "provider": data[identity]['data'].get('datasetA').get('type'),
+            #             "loa": data[identity]['data'].get('datasetA').get('loa'),
+            #             "issued": data[identity]['data'].get('datasetA').get('issued'),
+            #             "expiration": data[identity]['data'].get('datasetA').get('expiration'),
+            #             "attributes": data[identity]['data'].get('datasetA').get('attributes')}
+
+            #         datasetB = {
+            #             "id": data[identity]['data'].get('datasetB').get('id'),
+            #             "provider": data[identity]['data'].get('datasetB').get('type'),
+            #             "loa": data[identity]['data'].get('datasetB').get('loa'),
+            #             "issued": data[identity]['data'].get('datasetB').get('issued'),
+            #             "expiration": data[identity]['data'].get('datasetB').get('expiration'),
+            #             "attributes": data[identity]['data'].get('datasetB').get('attributes')}
+
+            #         identities_list.append(
+            #             {
+            #                 "id": unquote(data[identity]['id']),
+            #                 "provider": data[identity]['data'].get('type'),
+            #                 "lloa": data[identity]['data'].get('lloa'),
+            #                 "issued": data[identity]['data'].get('issued'),
+            #                 "expiration": data[identity]['data'].get('expiration'),
+            #                 "datasetA": datasetA,
+            #                 "datasetB": datasetB})
+
+            #     elif data[identity]['data'].get('type') == 'eMRTD':
+
+            #         identities_list.append(
+            #             {
+            #                 "id": unquote(data[identity]['id']),
+            #                 "provider": data[identity]['data'].get('type'),
+            #                 "loa": data[identity]['data'].get('loa'),
+            #                 "issued": data[identity]['data'].get('issued'),
+            #                 "expiration": data[identity]['data'].get('expiration'),
+            #                 "attributes": data[identity]['data'].get('attributes')})
+
 
             providers_list = list(identity.get('provider')
                                   for identity in identities_list)
             #['eIDAS', 'eduGAIN', 'eduGAIN', 'eduGAIN']
 
             # Adaptation until linked idenitites come with a valid provider:
-            providers_list = [
-                provider if provider is not None else 'linkedID' for provider in providers_list]
+            # providers_list = [
+            #     provider if provider is not None else 'linkedID' for provider in providers_list]
 
             # List without duplicity
             providers_list = list(set(providers_list))

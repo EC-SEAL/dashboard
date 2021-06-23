@@ -38,7 +38,7 @@ def manageidentity(request, UUID):
     if(identities):
         return render(request,
                       'umadashboard/manageidentitydata.html',
-                      {'identities': identities})
+                      {'identities': identities, 'endpoint': ''.join(Settings.Prod.SEAL_ENDPOINT.split('/')[:-1])})
 
     else:
         print('Redirecting to index page: UUID_session = {}'.format(UUID))

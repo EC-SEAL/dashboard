@@ -10,7 +10,7 @@ from urllib.parse import unquote
 
 import sys
 import io
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="UTF-8")
+#sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="UTF-8")
 
 """
     UC0.01
