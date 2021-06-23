@@ -631,7 +631,7 @@
 
 
       window.currentWindow;
-      
+
 
       function displaySubwindowPOST_(address, msToken) {
 
@@ -661,11 +661,12 @@
         const url = "{{endpoint}}/api/v1/identity/link/result";
 
         let data = new FormData()
+        data.append("UUID", sessionStorage.getItem('data'));
         data.append("moduleID", agent);
 
         data.append("identityID", identityID);
 
-        const response = await fetch(url, {method: 'POST', credentials: 'include', body: data})
+        const response = await fetch(url, {method: 'POST', body: data})
         
         if (response.status == 200) {
 
