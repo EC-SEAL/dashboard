@@ -477,13 +477,16 @@
 			function getField(id, label) {
 				var value = "";
 
-				id.attributes.forEach(function(item) {
+				if (id.attributes) {
 
-					if (item.friendlyName.toLowerCase() == label.toLowerCase()) {
-						value = " - " + item.values[0];
-					}
+					id.attributes.forEach(function(item) {
 
-				});
+						if (item.friendlyName.toLowerCase() == label.toLowerCase()) {
+							value = " - " + item.values[0];
+						}
+
+					});
+				}
 
 				return value;
 			}
@@ -492,25 +495,28 @@
 
 			aIdList.uniqueProviders.forEach(function(Provider) {
 
-				var newGroupOption = document.createElement("optgroup");
-				newGroupOption.label = Provider;
+				if (Provider != 'derivedID' && Provider != 'linkedID' && Provider != 'linkRequest'){
 
-				aIdList.identitiesList.forEach(function(Identity) {
+					var newGroupOption = document.createElement("optgroup");
+					newGroupOption.label = Provider;
 
-					if (Identity.provider == Provider) {
+					aIdList.identitiesList.forEach(function(Identity) {
 
-						var newOption = document.createElement("option");
+						if (Identity.provider == Provider) {
 
-						newOption.label = Identity.id.toString() + getField(Identity, "givenName");
-						newOption.value = Identity.id;
+							var newOption = document.createElement("option");
 
-						newGroupOption.appendChild(newOption);
+							newOption.label = Identity.id.toString() + getField(Identity, "givenName");
+							newOption.value = Identity.id;
 
-					}
+							newGroupOption.appendChild(newOption);
 
-				});
-	
-				dynamicSelect.appendChild(newGroupOption);
+						}
+
+					});
+		
+					dynamicSelect.appendChild(newGroupOption);
+				}
 			});
 
 		} // fillSelector

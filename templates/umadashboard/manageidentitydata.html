@@ -6,13 +6,242 @@
 {% block title %}Identity Manager{% endblock %}
 
 {% block content %}
+
+
+<!-- Form for Generic submit -->
+  <form id="GenericForm" method="post" action="" enctype="multipart/form-data" target="Generic-window">
+    <input type="hidden" name="msToken" value="" />
+  </form>
+<!-- END Form for Generic submit -->
+
 <div class="container">
+
   <div class="panel panel-default">
     <div class="heading">
       <span class="col-md-5 text-left"><h4>&nbsp;&nbsp;Identity Data in Storage</h4></span>
     </div>
     <div class="clear-fix">&nbsp;</div>
 
+
+      {% if identities.uniqueProviders|length == 0 %}
+      
+			<div class="text-center">
+			  <h5>No identities loaded </h5>
+			  <br>
+			</div>
+			 
+		  {% else %}
+	  
+      <ul class="nav nav-tabs" role="tablist" id="providertablist">
+	  
+			  {% for provider in identities.uniqueProviders %}
+
+        <li role="presentation" class="tab-pane">
+          <a href="#{{provider}}" aria-controls="{{provider}}" role="tab" data-toggle="tab">{{provider}}</a>
+				</li>
+	  
+			  {% endfor %}
+	  
+			</ul>
+			
+	  
+      <div class="tab-content panel-body">
+
+				{% for provider in identities.uniqueProviders %}
+				<div role="tabpanel" class="tab-pane" id="{{provider}}">
+	  
+					<div class="clear-fix">&nbsp;</div>
+		  
+					<div class="list-group">
+		  
+					{% for identity in identities.identitiesList %}
+
+						{% if identity.provider == provider %}
+
+							{% if identity.provider == "linkRequest" %}
+
+							<span class="list-group-item vista" visibility="visible">          
+							
+								<h4 class="list-group-item-heading">
+	
+								<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+	
+								<button type="button" class="btn btn-warning btn-sm" title="Request ID Card" alt="Request ID Card" onclick="linkResult('autoSEAL', '{{identity.id}}');">
+								Pending: Click to resolve</button>
+								
+								</h4>             
+								
+								<span class="list-group-item-text"><br>
+				
+								<p><i>Issued on {{identity.issued}}  with <b>LLoA: {{identity.lloa}}</b></i></p><br>
+	
+								<p><b>Dataset A:</b></p>
+	
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetA.id}}</b></p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetA.loa}}</b></p>
+								
+									{% for element in identity.datasetA.attributes %}
+												
+										<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											
+											<b>{{element.friendlyName}}:&nbsp;</b>
+	
+											{% for value in element.values %}
+	
+												<b>{{value}}&nbsp;&nbsp;</b>
+												
+											{% endfor %}
+	
+										</p>                               
+									
+									{% endfor %}
+	
+								<p></p>
+	
+								<p><b>Dataset B:</b></p>
+	
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetB.id}}</b></p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetB.loa}}</b></p>
+	
+									{% for element in identity.datasetB.attributes %}
+												
+										<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												
+											<b>{{element.friendlyName}}:&nbsp;</b>
+	
+											{% for value in element.values %}
+	
+												<b>{{value}}&nbsp;&nbsp;</b>
+												
+											{% endfor %}
+	
+										</p>                               
+									
+									{% endfor %}                      
+	
+								</span>
+	
+							</span>
+					
+							{% elif identity.provider == "linkedID" %}
+		
+							<span class="list-group-item vista" visibility="visible">          
+							
+								<h4 class="list-group-item-heading">
+	
+								<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+	
+								<button type="button" class="btn btn-success btn-sm" title="Accepted ID Card" alt="Accepted ID Card" onclick="">
+								Accepted</button>
+								
+								</h4>             
+								
+								<span class="list-group-item-text"><br>
+				
+								<p><i>Issued on {{identity.issued}}  with <b>LLoA: {{identity.lloa}}</b></i></p><br>
+	
+								<p><b>Dataset A:</b></p>
+	
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetA.id}}</b></p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetA.loa}}</b></p>
+								
+									{% for element in identity.datasetA.attributes %}
+												
+										<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											
+											<b>{{element.friendlyName}}:&nbsp;</b>
+	
+											{% for value in element.values %}
+	
+												<b>{{value}}&nbsp;&nbsp;</b>
+												
+											{% endfor %}
+	
+										</p>                               
+									
+									{% endfor %}
+	
+								<p></p>
+	
+								<p><b>Dataset B:</b></p>
+	
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetB.id}}</b></p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetB.loa}}</b></p>
+	
+									{% for element in identity.datasetB.attributes %}
+												
+										<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												
+											<b>{{element.friendlyName}}:&nbsp;</b>
+	
+											{% for value in element.values %}
+	
+												<b>{{value}}&nbsp;&nbsp;</b>
+												
+											{% endfor %}
+	
+										</p>                               
+									
+									{% endfor %}                      
+	
+								</span>
+	
+							</span>
+
+							{% else %}
+
+							<span class="list-group-item vista" visibility="visible">
+								
+								<h4 class="list-group-item-heading">
+			
+								<strong class="titulo">ID: {{identity.id}} &nbsp; </strong>
+			
+								<button type="button" class="btn btn-success btn-sm" title="Accepted ID Card" alt="Accepted ID Card" onclick="">
+								Accepted</button>
+								
+								</h4>                 
+								
+								<span class="list-group-item-text"><br>
+				
+								<p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
+								
+								{% for element in identity.attributes  %}
+									
+									<p><b>{{element.friendlyName}}:&nbsp;</b>
+			
+										{% for value in element.values %}
+			
+											<b>{{value}}</b>&nbsp;&nbsp;
+										
+										{% endfor %}
+			
+									</p>
+								
+								{% endfor %}
+			
+								</span>
+			
+							</span>
+
+							{% endif %}
+									
+						{% endif %}
+		
+					{% endfor %}
+		  
+					</div>
+		  
+				</div>
+				{% endfor %}
+
+				<!-- ################################ -->
+
+			</div>
+	  
+		  {% endif %} 
+
+
+    {% comment %}
     {% if identities.uniqueProviders|length == 0 %}
       
       <div class="tex-center">
@@ -390,6 +619,7 @@
       </div>
 
     {% endif %}  
+    {% endcomment %}
   </div>
 </div>
 {% endblock %}
@@ -407,6 +637,74 @@
         }
 
        });
+
+
+      window.currentWindow;
+
+
+      function displaySubwindowPOST_(address, msToken) {
+
+        var f = document.getElementById('GenericForm');
+        document.getElementById("GenericForm").action = address;
+        f.msToken.value = msToken;
+
+        window.currentWindow =  window.open('', 'Generic-window', "width=700,height=700,menubar=0,location=yes,resizable=0,scrollbars=0,status=1");
+        f.submit();
+      }
+
+      function popupClosingAction() {
+
+        window.intervalWindow = setInterval(function(){
+          if(window.currentWindow.closed) {
+            console.log('cerrando');
+            clearInterval(window.intervalWindow);
+            window.location.reload();
+          }
+        }, 100);
+      }
+
+
+      async function linkResult(agent, identityID){
+			  //alert("Link result function status: (agent=" + agent +", id=" + identityID + ") -> not implemented yet");
+
+        const url = "{{endpoint}}/api/v1/identity/link/result";
+
+        let data = new FormData()
+        data.append("UUID", sessionStorage.getItem('data'));
+        data.append("moduleID", agent);
+
+        data.append("identityID", identityID);
+
+        const response = await fetch(url, {method: 'POST', credentials: 'omit', body: data})
+        
+        if (response.status == 200) {
+
+          const response_json = await response.json();
+
+
+          let response_attributes = response_json['content']['application/json'];
+
+          let address = response_attributes['address']['schema']['value'];
+          let msToken = response_attributes['msToken']['schema']['value'];
+
+          alert("The result of this action may create a new linkedID only in case this request is approved. The request will be deleted after processed.")
+
+          displaySubwindowPOST_(address, msToken);
+          popupClosingAction();
+        
+        } else if (response.status == 401) {
+
+          alert("Your session have been expired, you will be redirected to a new one.")
+          location.reload()
+
+        } else {
+
+          alert("Uncontrolled error!?")
+
+        }
+
+		}
+
 
     </script>
 {% endblock %}
