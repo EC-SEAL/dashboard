@@ -22,6 +22,8 @@ from dashboardAPI.v1.src.useCases import uc0_02
 
 def index(request):
 
+    endpoint =  'https://'+''.join(Settings.Prod.SEAL_ENDPOINT.split('/')[2:-1])
+
     if not request.get_signed_cookie('UUID', None):
 
         print('no hay cookie')
@@ -29,7 +31,7 @@ def index(request):
         #User has no UUID asigned:
         response = render(request,
                     'umadashboard/index.html',
-                    {'seal_endpoint': Settings.Prod.SEAL_ENDPOINT})
+                    {'seal_endpoint': endpoint})
 
         try:
             UUID = getUUID()
@@ -57,7 +59,7 @@ def index(request):
         if cl_session.sessionID != None and identities != None:
             return render(request,
                     'umadashboard/index.html',
-                    {'seal_endpoint': Settings.Prod.SEAL_ENDPOINT,
+                    {'seal_endpoint': endpoint,
                     'identities': identities})
 
         else:
@@ -77,6 +79,8 @@ def identity_manager(request):
     # Pass it to the Django template to generate an Identity Manager with
     # either VCissuer funct., or not.
     ssiWallet = None
+
+    endpoint =  'https://'+''.join(Settings.Prod.SEAL_ENDPOINT.split('/')[2:-1])
 
     return render(request,
                   'umadashboard/sealidentitymanager.html',
