@@ -1,0 +1,1492 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+{% block title %}Web Dashboard{% endblock %}
+
+
+{% block content %}
+
+
+<!-- Modal DEMO -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+		  ...
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+		  <button type="button" class="btn btn-primary">Save changes</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+
+<!-- retrieveID modal window -->
+<div class="modal fade" id="retrieveID-modal" tabindex="-1" aria-labelledby="retrieveIDModalLabelled" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header justify-content-center">
+			<h5 class="modal-title" id="retrieveIDModalLabelled">Identity sources</h5>
+
+			</div>
+			<div class="modal-body">
+				<div  class="form-inline text-center">
+					<div class="form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="retrieveID('eIDAS');">eIDAS</button>
+					</div>
+					<div class="form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="retrieveID('eduGAIN');">eduGAIN</button>
+					</div>
+					<!-- <div class="form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="retrieveID('eMRTD');">eMRTD</button>
+					</div> -->
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+<!-- IdRecon modal window -->
+<div class="modal fade" id="LinkID-modal" tabindex="-1" aria-labelledby="linkIDModalLabelled" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header justify-content-center">
+			<h5 class="modal-title" id="retrieveIDModalLabelled">Linking methods</h5>
+
+			</div>
+			<div class="modal-body">
+				<div  class="form-inline text-center">
+					<div class="form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="LinkSelector('autoSEAL');">Auto</button>
+					</div>
+					<div class="form-group mb-2">
+						<!-- Disable for now because of a WIP status: Pending. -->
+						<button type="button" class="btn btn-primary mb-2" disabled onclick="/*funcIdRecon('manualXYZ');*/">Manual</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+<!-- Link Selector modal window -->
+<div class="modal fade" tabindex="-1" role="dialog" id="link-selector-modal">
+    <div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header justify-content-center">
+				<h4 class="modal-title">Identities selector</h4>
+			</div>
+			<div class="modal-body" id="modal-body-id" >
+				<div id="link-selector" style="display: none;" class="form-group mb-2">
+					<p>Please select two identities to make a reconciliation request:</p>
+					<br>
+					<label for="datasetIDa">Identity A selector:</label>
+					<select id="datasetIDa" class="form-control mb-2" onchange="toggleLinkSelectorRequestButton()" required>
+						<option disabled selected style="display: none" value='0'>Select an Identity</option>
+					</select>
+					<br>
+					<br>
+					<label for="datasetIDb">Identity B selector:</label>
+					<select id="datasetIDb" class="form-control mb-2" onchange="toggleLinkSelectorRequestButton()" required>
+						<option disabled selected style="display: none" value='0'>Select an Identity</option>
+					</select>
+					<br>
+					<br>
+					<div class="form-inline text-center">
+						<button type="button" id="link-selector-cancel-button" class="btn btn-danger btn-primary text-center mb-2" onclick="$('#link-selector-modal').modal('hide');">Cancel</button>
+						<button type="button" id="link-selector-request-button" class="btn btn-primary text-center mb-2" disabled>Request</button>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+</div>
+
+
+<!-- VCIssue modal window -->
+<div class="modal fade" id="VCissue-modal" tabindex="-1" aria-labelledby="VCissueModalLabelled" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header justify-content-center">
+			<h5 class="modal-title" id="retrieveIDModalLabelled">Verifiable Credential sources</h5>
+
+			</div>
+			<div class="modal-body">
+				<div  class="form-inline text-center">
+					<div class="form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="issueVC('eIDAS');">eIDAS</button>
+					</div>
+					<div class="form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="issueVC('eduGAIN');">eduGAIN</button>
+					</div>
+					<div class="form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="issueVC('eMRTD');">eMRTD</button>
+					</div>
+					<div class="form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="issueVC('eIDAS-eduGAIN');">eIDAS-eduGAIN</button>
+					</div>	
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+<!-- Load PDS modal window -->
+<div class="modal fade" id="LoadPDS-modal" tabindex="-1" aria-labelledby="LoadPDSModalLabelled" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header justify-content-center">
+			<h5 class="modal-title" id="retrieveIDModalLabelled">Upload methods</h5>
+
+			</div>
+			<div class="modal-body grid">
+				<div  class=" row form-inline text-center m-5">
+					<div class="col form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="LoadPDS('Browser');">Local File</button>
+					</div>
+					<div class="col form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="LoadPDS('googleDrive');">Google Drive</button>
+					</div>
+					<div class="col form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="LoadPDS('oneDrive');">One Drive</button>
+					</div>	
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+<!-- Save PDS modal window -->
+<div class="modal fade" id="SavePDS-modal" tabindex="-1" aria-labelledby="SavePDSModalLabelled" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header justify-content-center">
+			<h5 class="modal-title" id="retrieveIDModalLabelled">Save methods</h5>
+
+			</div>
+			<div class="modal-body grid">
+				<div  class=" row form-inline text-center m-5">
+					<div class="col form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="SavePDS('Browser');">Local File</button>
+					</div>
+					<div class="col form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="SavePDS('googleDrive');">Google Drive</button>
+					</div>
+					<div class="col form-group mb-2">
+						<button type="button" class="btn btn-primary mb-2" onclick="SavePDS('oneDrive');">One Drive</button>
+					</div>	
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+<!-- Form for Generic submit -->
+<form id="GenericForm" method="post" action="" enctype="multipart/form-data" target="Generic-window">
+	<input type="hidden" name="msToken" value="" />
+</form>
+<!-- END Form for Generic submit -->
+
+
+<div class="container">
+	
+	<div class="grid">
+		<div class="row justify-content-center my-5">
+			<div class="col-7 mt-2">
+
+				<div class="card mh-100 text-center">
+
+					<div class="card-header fs-6 fw-light">
+						PDS Options
+					</div>
+					
+					<div class="card-body p-3">
+
+						<div class="grid">
+							<div class="row">
+								<a class="col-6 text-decoration-none" href="#" data-bs-toggle="modal" data-bs-target="#LoadPDS-modal">
+
+									<div class="d-block">
+										<!-- hide on screens smaller than md -->
+			
+										<svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
+											<path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707V11.5z"/>
+											<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+										</svg>
+									
+									</div>
+									<div class="text mt-2">
+										<!-- hide on md and wider screens -->
+										<h6>Upload PDS</h6>
+			
+									</div>
+
+								</a>
+								<a class="col-6 text-decoration-none" href="#" data-bs-toggle="modal" data-bs-target="#SavePDS-modal">
+
+									<div class="d-block">
+										<!-- hide on screens smaller than md -->
+			
+										<svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" fill="currentColor" class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
+											<path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z"/>
+											<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+										  </svg>
+									
+									</div>
+									<div class="text mt-2">
+										<!-- hide on md and wider screens -->
+										<h6>Save PDS</h6>
+			
+									</div>
+
+								</a>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<div class="col-5 mt-2">
+				
+				<div class="card mh-100 text-center">
+
+					<div class="card-header fs-6 fw-light">
+						SSI Connection
+					</div>
+					
+					<div class="card-body p-3">
+
+						<a class="text-decoration-none" href="#" onclick="SSIconnection();">
+
+							<div class="d-block">
+								<!-- hide on screens smaller than md -->
+	
+								<svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" fill="currentColor" class="bi bi-bounding-box" viewBox="0 0 16 16">
+									<path d="M5 2V0H0v5h2v6H0v5h5v-2h6v2h5v-5h-2V5h2V0h-5v2H5zm6 1v2h2v6h-2v2H5v-2H3V5h2V3h6zm1-2h3v3h-3V1zm3 11v3h-3v-3h3zM4 15H1v-3h3v3zM1 4V1h3v3H1z"/>
+								  </svg>
+							
+							</div>
+							<div class="text mt-2">
+								<!-- hide on md and wider screens -->
+								<h6>uPort</h6>
+	
+							</div>
+
+						</a>
+
+					</div>
+
+				</div>
+
+			</div>
+
+
+		</div>
+	</div>
+
+	<div class="my-5"></div>
+
+	<div class="grid my-5">
+
+		<div class="row justify-content-center">
+
+			<button class="col-2 mx-2 btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#retrieveID-modal">
+				<div class="d-block mt-3">
+					<!-- hide on screens smaller than md -->
+
+					<svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" fill="currentColor" class="bi bi-credit-card-2-front" viewBox="0 0 16 16">
+						<path d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z"/>
+						<path d="M2 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/>
+					  </svg>
+				
+				</div>
+				<div class="text mt-2">
+					<!-- hide on md and wider screens -->
+					<p class="fw-light">Retrieve ID</p>
+				</div>
+			</button>
+
+			<button class="col-2 mx-2 btn btn-primary" type="button" onclick="deriveID('UUID');">
+				<div class="d-block mt-3">
+					<!-- hide on screens smaller than md -->
+
+					<svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" fill="currentColor" class="bi bi-files" viewBox="0 0 16 16">
+						<path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z"/>
+					  </svg>
+				
+				</div>
+				<div class="text mt-2">
+					<!-- hide on md and wider screens -->
+					<p class="fw-light">Derive ID</p>
+				</div>
+			</button>
+
+			{% if identities.uniqueProviders|length == 0 %}
+			<button class="col-2 mx-2 btn btn-primary" type="button" disabled tabindex="0" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="hover focus" data-bs-content="You need to have identities first!">
+			{% else %}
+			<button class="col-2 mx-2 btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#LinkID-modal">
+			{% endif %}
+				<div class="d-block mt-3">
+					<!-- hide on screens smaller than md -->
+
+					<svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" fill="currentColor" class="bi bi-link" viewBox="0 0 16 16">
+						<path d="M6.354 5.5H4a3 3 0 0 0 0 6h3a3 3 0 0 0 2.83-4H9c-.086 0-.17.01-.25.031A2 2 0 0 1 7 10.5H4a2 2 0 1 1 0-4h1.535c.218-.376.495-.714.82-1z"/>
+						<path d="M9 5.5a3 3 0 0 0-2.83 4h1.098A2 2 0 0 1 9 6.5h3a2 2 0 1 1 0 4h-1.535a4.02 4.02 0 0 1-.82 1H12a3 3 0 1 0 0-6H9z"/>
+					  </svg>
+				
+				</div>
+				<div class="text mt-2">
+					<!-- hide on md and wider screens -->
+					<p class="fw-light">Link ID</p>
+				</div>
+			</button>
+
+			<button class="col-2 mx-2 btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#VCissue-modal">
+				<div class="d-block mt-3">
+					<!-- hide on screens smaller than md -->
+
+					<svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" fill="currentColor" class="bi bi-file-post" viewBox="0 0 16 16">
+						<path d="M4 3.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-8z"/>
+						<path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
+					  </svg>
+				
+				</div>
+				<div class="text mt-2">
+					<!-- hide on md and wider screens -->
+					<p class="fw-light">Issue VC</p>
+				</div>
+			</button>
+			
+		</div>
+
+		<div class="row my-5"></div>
+
+		<!-- MyIDs -->
+		<div class="row justify-content-center">
+
+			{% if identities.uniqueProviders|length == 0 %}
+      
+			<div class="text-center">
+			  <h5>No identities loaded </h5>
+			  <br>
+			</div>
+			 
+		  	{% else %}
+	  
+			<ul class="nav nav-tabs" id="providertablist" role="tablist">
+	  
+			  {% for provider in identities.uniqueProviders %}
+
+				<li class="nav-item" role="presentation">
+					<a class="nav-link" id="{{provider}}-tab" role="tab" aria-controls="{{provider}}" aria selected="true" data-bs-toggle="tab" href="#{{provider}}">{{provider}}</a>
+				</li>
+				
+				{% comment %}
+				<!-- Delete in the next code cleaning -->
+
+				{% if provider == 'eIDAS' %}
+	  
+				  <li class="nav-item" role="presentation">
+					<a class="nav-link" id="eIDAS-tab" role="tab" aria-controls="eIDAS" aria selected="true" data-bs-toggle="tab" href="#eIDAS">eIDAS</a>
+				  </li>
+	  
+				{% endif %}
+	  
+				{% if provider == 'eduGAIN' %}
+	  
+				  <li class="nav-item" role="presentation">
+					<a class="nav-link" id="eduGAIN-tab" role="tab" aria-controls="eduGAIN" aria-selected="false" data-bs-toggle="tab" href="#eduGAIN">eduGAIN</a>
+				  </li>
+	  
+				{% endif %}
+	  
+				{% if provider == 'eMRTD' %}
+	  
+				  <li class="nav-item" role="presentation">
+					<a class="nav-link" id="eMRTD-tab" role="tab" aria-controls="eMRTD" aria-selected="false" data-bs-toggle="tab" href="#eMRTD">eMRTD</a>
+				  </li>
+	  
+				{% endif %}          
+	  
+				{% if provider == 'derivedID' %}
+	  
+				  <li class="nav-item" role="presentation">
+					<a class="nav-link" id="derivedID-tab" role="tab" aria-controls="derivedID" aria-selected="false" data-bs-toggle="tab" href="#derivedID">Derived ID</a>
+				  </li>
+	  
+				{% endif %}          
+	  
+				{% if provider == 'linkedID' %}
+	  
+				  <li class="nav-item" role="presentation">
+					<a class="nav-link" id="linkedID-tab" role="tab" aria-controls="linkedID" aria-selected="false" data-bs-toggle="tab" href="#linkedID">Linked ID</a>
+				  </li>
+	  
+				{% endif %}  
+				{% endcomment %}
+	  
+			  {% endfor %}
+	  
+			</ul>
+			
+	  
+			<div class="tab-content">
+
+				{% for provider in identities.uniqueProviders %}
+				<div role="tabpanel" class="tab-pane" id="{{provider}}">
+	  
+					<div class="clear-fix">&nbsp;</div>
+		  
+					<div class="list-group">
+		  
+					{% for identity in identities.identitiesList %}
+
+						{% if identity.provider == provider %}
+
+							{% if identity.provider == "linkRequest" %}
+
+							<span class="list-group-item vista" visibility="visible">          
+							
+								<h4 class="list-group-item-heading">
+	
+								<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+	
+								<button type="button" class="btn btn-warning btn-sm" title="Delete ID Card" alt="Delete ID Card" onclick="linkResult('autoSEAL', '{{identity.id}}');">
+								Pending: Click to resolve</button>
+								
+								</h4>             
+								
+								<span class="list-group-item-text"><br>
+				
+								<p><i>Issued on {{identity.issued}}  with <b>LLoA: {{identity.lloa}}</b></i></p><br>
+	
+								<p><b>Dataset A:</b></p>
+	
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetA.id}}</b></p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetA.loa}}</b></p>
+								
+									{% for element in identity.datasetA.attributes %}
+												
+										<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											
+											<b>{{element.friendlyName}}:&nbsp;</b>
+	
+											{% for value in element.values %}
+	
+												<b>{{value}}&nbsp;&nbsp;</b>
+												
+											{% endfor %}
+	
+										</p>                               
+									
+									{% endfor %}
+	
+								<p></p>
+	
+								<p><b>Dataset B:</b></p>
+	
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetB.id}}</b></p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetB.loa}}</b></p>
+	
+									{% for element in identity.datasetB.attributes %}
+												
+										<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												
+											<b>{{element.friendlyName}}:&nbsp;</b>
+	
+											{% for value in element.values %}
+	
+												<b>{{value}}&nbsp;&nbsp;</b>
+												
+											{% endfor %}
+	
+										</p>                               
+									
+									{% endfor %}                      
+	
+								</span>
+	
+							</span>
+					
+							{% elif identity.provider == "linkedID" %}
+		
+							<span class="list-group-item vista" visibility="visible">          
+							
+								<h4 class="list-group-item-heading">
+	
+								<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+	
+								<button type="button" class="btn btn-success btn-sm" title="Delete ID Card" alt="Delete ID Card" onclick="">
+								Accepted</button>
+								
+								</h4>             
+								
+								<span class="list-group-item-text"><br>
+				
+								<p><i>Issued on {{identity.issued}}  with <b>LLoA: {{identity.lloa}}</b></i></p><br>
+	
+								<p><b>Dataset A:</b></p>
+	
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetA.id}}</b></p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetA.loa}}</b></p>
+								
+									{% for element in identity.datasetA.attributes %}
+												
+										<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											
+											<b>{{element.friendlyName}}:&nbsp;</b>
+	
+											{% for value in element.values %}
+	
+												<b>{{value}}&nbsp;&nbsp;</b>
+												
+											{% endfor %}
+	
+										</p>                               
+									
+									{% endfor %}
+	
+								<p></p>
+	
+								<p><b>Dataset B:</b></p>
+	
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetB.id}}</b></p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetB.loa}}</b></p>
+	
+									{% for element in identity.datasetB.attributes %}
+												
+										<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												
+											<b>{{element.friendlyName}}:&nbsp;</b>
+	
+											{% for value in element.values %}
+	
+												<b>{{value}}&nbsp;&nbsp;</b>
+												
+											{% endfor %}
+	
+										</p>                               
+									
+									{% endfor %}                      
+	
+								</span>
+	
+							</span>
+
+							{% else %}
+
+							<span class="list-group-item vista" visibility="visible">
+								
+								<h4 class="list-group-item-heading">
+			
+								<strong class="titulo">ID: {{identity.id}} &nbsp; </strong>
+			
+								<button type="button" class="btn btn-success btn-sm" title="Delete ID Card" alt="Delete ID Card" onclick="">
+								Accepted</button>
+								
+								</h4>                 
+								
+								<span class="list-group-item-text"><br>
+				
+								<p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
+								
+								{% for element in identity.attributes  %}
+									
+									<p><b>{{element.friendlyName}}:&nbsp;</b>
+			
+										{% for value in element.values %}
+			
+											<b>{{value}}</b>&nbsp;&nbsp;
+										
+										{% endfor %}
+			
+									</p>
+								
+								{% endfor %}
+			
+								</span>
+			
+							</span>
+
+							{% endif %}
+									
+						{% endif %}
+		
+					{% endfor %}
+		  
+					</div>
+		  
+				</div>
+				{% endfor %}
+
+				<!-- ################################ -->
+
+				{% comment %}
+			
+				<div role="tabpanel" class="tab-pane" id="eIDAS">
+
+				<div class="clear-fix">&nbsp;</div>
+
+				<div class="list-group">
+
+					{% if identities %}
+
+					{% for identity in identities.identitiesList %}
+					
+						{% if identity.provider == 'eIDAS' %}
+
+						<span class="list-group-item vista" visibility="visible">
+							
+							<h4 class="list-group-item-heading">
+
+							<strong class="titulo">ID: {{identity.id}} &nbsp; </strong>
+
+							<button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
+							Delete</button>
+							
+							</h4>                 
+							
+							<span class="list-group-item-text"><br>
+			
+							<p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
+							
+							{% for element in identity.attributes  %}
+								
+								<p><b>{{element.friendlyName}}:&nbsp;</b>
+
+									{% for value in element.values %}
+
+										<b>{{value}}</b>&nbsp;&nbsp;
+									
+									{% endfor %}
+
+								</p>
+							
+							{% endfor %}
+
+							</span>
+
+						</span>
+								
+						{% endif %}
+
+					{% endfor %}
+
+					{% endif %}
+
+				</div>
+
+				</div> 
+
+				<div role="tabpanel" class="tab-pane" id="eduGAIN">
+				
+				<div class="clear-fix">&nbsp;</div> 
+
+				<div class="list-group">
+
+					{% if identities %}
+
+					{% for identity in identities.identitiesList %}
+					
+						{% if identity.provider == 'eduGAIN' %}
+
+						<span class="list-group-item vista" visibility="visible">          
+							
+							<h4 class="list-group-item-heading">
+
+							<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+
+							<button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
+							Delete</button>
+							
+							</h4>             
+							
+							<span class="list-group-item-text"><br>
+			
+							<p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
+							
+							{% for element in identity.attributes %}
+										
+								<p><b>{{element.friendlyName}}:</b>&nbsp;
+
+									{% for value in element.values %}
+
+										<b>{{value}}&nbsp;&nbsp;</b>
+										
+									{% endfor %}
+
+								</p>                        
+							
+							{% endfor %}
+
+							</span>
+
+						</span>                
+					
+						{% endif %}
+					
+					{% endfor %}
+
+					{% endif %}
+
+				</div>
+
+				</div>    
+
+				<div role="tabpanel" class="tab-pane" id="eMRTD">
+
+				<div class="clear-fix">&nbsp;</div>
+
+				<div class="list-group">
+
+					{% if identities %}
+
+					{% for identity in identities.identitiesList %}
+					
+						{% if identity.provider == 'eMRTD' %}
+
+						<span class="list-group-item vista" visibility="visible">
+							
+							<h4 class="list-group-item-heading">
+
+							<strong class="titulo">ID: {{identity.id}} &nbsp; </strong>
+
+							<button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
+							Delete</button>
+							
+							</h4>                 
+							
+							<span class="list-group-item-text"><br>
+			
+							<p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
+							
+							{% for element in identity.attributes  %}
+								
+								<p><b>{{element.friendlyName}}:&nbsp;</b>
+
+									{% for value in element.values %}
+
+										<b>{{value}}</b>&nbsp;&nbsp;
+									
+									{% endfor %}
+
+								</p>
+							
+							{% endfor %}
+
+							</span>
+
+						</span>
+								
+						{% endif %}
+
+					{% endfor %}
+
+					{% endif %}
+
+				</div>
+
+				</div>
+
+				<div role="tabpanel" class="tab-pane" id="derivedID">
+				
+				<div class="clear-fix">&nbsp;</div> 
+
+				<div class="list-group">
+
+					{% if identities %}
+
+					{% for identity in identities.identitiesList %}
+					
+						{% if identity.provider == 'derivedID' %}
+
+						<span class="list-group-item vista" visibility="visible">          
+							
+							<h4 class="list-group-item-heading">
+
+							<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+
+							<button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
+							Delete</button>
+							
+							</h4>             
+							
+							<span class="list-group-item-text"><br>
+			
+							<p><i>Issued on {{identity.issued}} with <b>LoA: {{identity.loa}}</b></i></p><br>
+							
+							{% for element in identity.attributes %}
+										
+								<p><b>{{element.friendlyName}}:</b>&nbsp;
+
+									{% for value in element.values %}
+
+										<b>{{value}}&nbsp;&nbsp;</b>
+									
+									{% endfor %}
+
+								</p>                        
+							
+							{% endfor %}
+
+							</span>
+
+						</span>                
+					
+						{% endif %}
+					
+					{% endfor %}
+
+					{% endif %}
+
+				</div>
+
+				</div>   
+
+				<div role="tabpanel" class="tab-pane" id="linkedID">
+				
+				<div class="clear-fix">&nbsp;</div> 
+
+				<div class="list-group">
+
+					{% if identities %}
+
+					{% for identity in identities.identitiesList %}
+					
+						{% if identity.provider == 'linkedID' or identity.provider == None %}
+
+						<span class="list-group-item vista" visibility="visible">          
+							
+							<h4 class="list-group-item-heading">
+
+							<strong class="titulo">ID:  {{identity.id}} &nbsp; </strong>
+
+							<button type="button" class="btn btn-danger btn-sm" title="Delete ID Card" alt="Delete ID Card" data-toggle="modal" data-target="#DeleteModal" onclick="">
+							Delete</button>
+							
+							</h4>             
+							
+							<span class="list-group-item-text"><br>
+			
+							<p><i>Issued on {{identity.issued}}  with <b>LLoA: {{identity.lloa}}</b></i></p><br>
+
+							<p><b>Dataset A:</b></p>
+
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetA.id}}</b></p>
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetA.loa}}</b></p>
+							
+								{% for element in identity.datasetA.attributes %}
+											
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										
+										<b>{{element.friendlyName}}:&nbsp;</b>
+
+										{% for value in element.values %}
+
+											<b>{{value}}&nbsp;&nbsp;</b>
+											
+										{% endfor %}
+
+									</p>                               
+								
+								{% endfor %}
+
+							<p></p>
+
+							<p><b>Dataset B:</b></p>
+
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>ID: {{identity.datasetB.id}}</b></p>
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>LoA: {{identity.datasetB.loa}}</b></p>
+
+								{% for element in identity.datasetB.attributes %}
+											
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											
+										<b>{{element.friendlyName}}:&nbsp;</b>
+
+										{% for value in element.values %}
+
+											<b>{{value}}&nbsp;&nbsp;</b>
+											
+										{% endfor %}
+
+									</p>                               
+								
+								{% endfor %}                      
+
+							</span>
+
+						</span>                
+					
+						{% endif %}
+					
+					{% endfor %}
+
+					{% endif %}
+
+				</div>
+
+				</div> 
+			
+				{% endcomment %}
+			</div>
+	  
+		  {% endif %}  
+
+		</div>
+
+	</div>
+
+</div>	
+{% endblock %}
+
+
+{% block javascript_pie %}
+    {{block.super}}
+    <script nonce="{{settings.VARIABLE_NONCE_CSP}}">
+
+		$(document).ready(function() {			
+			if(window.location.href[window.location.href.length-1] != '/'){
+				window.location.href = window.location.href + '/'
+			} else {
+				//Alert for informing the user that the functions methods need to use pop-up's
+				// alert("Information: This website needs pop-ups in order to work properly.\nAccepting this message you are confirming you have read the current information.");
+			}
+		});
+
+		const ENDPOINT = "https://seal.uma.es";
+		//const ENDPOINT = "http://localhost";
+
+
+		window.intervalWindow;
+		window.currentWindow;
+
+		// window.intervalTimerValue = 1500;   // 3* 1000 = 3 * 1 sec(ms) = 3 sec -> to 1.5 sec
+		// window.watchdogTimerValue = 600000; // 10 * 60000 = 10 * 1 min(ms) = 10 min
+
+		// Open externatl (tab) window with a GET request
+		function manageIdentities() {
+
+
+
+		}
+		
+		function displaySubwindowGET_(address, msToken) {
+			const url = address + '?msToken=' + msToken;
+
+			window.currentWindow = window.open(url, "connectWindow", "width=700,height=700,menubar=0,location=yes,resizable=0,scrollbars=0,status=1");
+		}
+
+		function displaySubwindowPOST_(address, msToken) {
+
+			var f = document.getElementById('GenericForm');
+			document.getElementById("GenericForm").action = address;
+			f.msToken.value = msToken;
+
+			window.currentWindow =  window.open('', 'Generic-window', "width=700,height=700,menubar=0,location=yes,resizable=0,scrollbars=0,status=1");
+			f.submit();
+		}
+
+		function popupClosingAction() {
+
+			window.intervalWindow = setInterval(function(){
+				if(window.currentWindow.closed) {
+					console.log('cerrando');
+					clearInterval(window.intervalWindow);
+					window.location.reload();
+				}
+			}, 100);
+		}
+
+		function toggleLinkSelectorRequestButton() {
+
+			if(document.getElementById('datasetIDa').value != '0' && document.getElementById('datasetIDb').value != '0') {
+				$('#link-selector-request-button').attr('disabled', false);
+			} else {
+				$('#link-selector-request-button').attr('disabled', true);
+			}
+		}
+
+		function cleanSelector_() {
+
+			// > aSelector = datasetIDa / datasetIDb
+
+			$('#datasetIDa').empty().append('<option disabled selected style="display: none" value="0">Select an identity</option>');
+			$('#datasetIDb').empty().append('<option disabled selected style="display: none" value="0">Select an identity</option>');
+			$('#link-selector-request-button').attr('disabled', true);
+
+		}
+
+		function showSelector() {
+
+			// Identities Selector is hidden
+			$('#link-selector').attr('style', "display: block;");
+			$('#link-selector-modal').modal('show');
+
+		}
+		
+		function fillSelector_(idList, agent) {
+			
+			cleanSelector_()
+
+			function getField(id, label) {
+				var value = "";
+
+				if (id.attributes) {
+
+					id.attributes.forEach(function(item) {
+
+						if (item.friendlyName.toLowerCase() == label.toLowerCase()) {
+							value = " - " + item.values[0];
+						}
+					});
+				}
+
+				return value;
+	
+			}
+
+			function setOptions(selectionId) {
+
+				var dynamicSelect = document.getElementById(selectionId);
+
+				idList.uniqueProviders.forEach(function(Provider) {
+
+					if (Provider != 'derivedID' && Provider != 'linkedID' && Provider != 'linkRequest'){
+
+						var newGroupOption = document.createElement("optgroup");
+						newGroupOption.label = Provider;
+
+						idList.identitiesList.forEach(function(Identity) {
+
+							if (Identity.provider == Provider) {
+
+								var newOption = document.createElement("option");
+
+								newOption.label = Identity.id.toString() + getField(Identity, "givenName");
+								newOption.value = Identity.id;
+
+								newGroupOption.appendChild(newOption);
+							}
+
+						});
+
+						dynamicSelect.appendChild(newGroupOption);
+					}
+				});
+
+			}
+
+			setOptions('datasetIDa');
+			setOptions('datasetIDb');
+
+			$('#link-selector-request-button').attr('onclick', "linkID('"+agent+"');");
+			
+			showSelector();
+
+		}
+
+		// ----------------------------------------------------------------
+
+		async function SSIconnection(){
+			// alert("SSI connection not established!");
+
+			const url = ENDPOINT + "/api/v1/decentralized/authenticate";
+
+			const response = await fetch(url, {method: 'POST', credentials: 'include'});
+
+			if (response.status == 200) {
+
+				const response_json = await response.json();
+
+				let response_attributes = response_json['content']['application/json'];
+
+				let address = response_attributes['address']['schema']['value'];
+				let msToken = response_attributes['msToken']['schema']['value'];
+
+				displaySubwindowGET_(address, msToken);
+
+			} else if (response.status == 401) {
+
+				alert("Your session have been expired, you will be redirected to a new one.")
+				location.reload()
+
+			} else {
+
+				alert("Uncontrolled error!?")
+
+			}
+
+		}
+
+		async function LoadPDS(agent){
+			// alert("Agent used was " + agent);
+
+			const url = ENDPOINT + "/api/v1/datastore/"+agent+"/load";
+
+			const response = await fetch(url, {method: 'POST', credentials: 'include'});
+
+			if (response.status == 200) {
+
+				const response_json = await response.json();
+
+				let response_attributes = response_json['content']['application/json'];
+
+				let address = response_attributes['address']['schema']['value'];
+				let msToken = response_attributes['msToken']['schema']['value'];
+
+				displaySubwindowGET_(address, msToken);
+				popupClosingAction();
+
+			} else if (response.status == 401) {
+
+				alert("Your session have been expired, you will be redirected to a new one.")
+				location.reload()
+
+			} else {
+
+				alert("Uncontrolled error!?")
+
+			}
+		}
+
+		async function SavePDS(agent){
+			// alert("Agent used was " + agent);
+
+			const url = ENDPOINT + "/api/v1/datastore/"+agent+"/store";
+
+			const response = await fetch(url, {method: 'POST', credentials: 'include'})
+
+			if (response.status == 200) {
+
+				const response_json = await response.json();
+
+				let response_attributes = response_json['content']['application/json'];
+
+				let address = response_attributes['address']['schema']['value'];
+				let msToken = response_attributes['msToken']['schema']['value'];
+
+				displaySubwindowGET_(address, msToken);
+
+			} else if (response.status == 401) {
+
+				alert("Your session have been expired, you will be redirected to a new one.")
+				location.reload()
+
+			} else {
+
+				alert("Uncontrolled error!?")
+
+			}
+
+		}
+
+		// ----------------------------------------------------------------
+
+		async function retrieveID(agent) {
+			// alert("retrieveID");
+
+			const url = ENDPOINT + "/api/v1/identity/retrieve";
+
+			let data = new FormData()
+			data.append("moduleID", agent);
+
+			const response = await fetch(url, {method: 'POST', credentials: 'include', body: data})
+			
+			if (response.status == 200) {
+
+				const response_json = await response.json();
+
+				let response_attributes = response_json['content']['application/json'];
+
+				let address = response_attributes['address']['schema']['value'];
+				let msToken = response_attributes['msToken']['schema']['value'];
+
+				displaySubwindowPOST_(address, msToken);
+				popupClosingAction();
+			
+			} else if (response.status == 401) {
+
+				alert("Your session have been expired, you will be redirected to a new one.")
+				location.reload()
+
+			} else {
+
+				alert("Uncontrolled error!?")
+
+			}
+
+		}
+
+		async function deriveID(agent) {
+			// alert("deriveID");
+
+			const url = ENDPOINT + "/api/v1/identity/derive";
+
+			let data = new FormData()
+			data.append("moduleID", agent);
+
+			const response = await fetch(url, {method: 'POST', credentials: 'include', body: data})
+
+			if (response.status == 200) {
+
+				const response_json = await response.json();
+
+				let response_attributes = response_json['content']['application/json'];
+
+				let address = response_attributes['address']['schema']['value'];
+				let msToken = response_attributes['msToken']['schema']['value'];
+
+				displaySubwindowPOST_(address, msToken);
+				popupClosingAction();
+
+			} else if (response.status == 401) {
+
+				alert("You need to be authenticated in an identity provoder to derive an ID. Please, try to retrieve an identity first.")
+
+			} else {
+
+				alert("Uncontrolled error!?")
+
+			}
+
+			
+		}
+
+		async function issueVC(agent) {
+			// alert("issueVC");
+
+			const url = ENDPOINT + "/api/v1/decentralized/vc/issue";
+
+			let data = new FormData()
+			data.append("moduleID", agent);
+
+			
+			const response = await fetch(url, {method: 'POST', credentials: 'include', body: data})
+
+			if (response.status == 200) {
+
+				const response_json = await response.json();
+
+				let response_attributes = response_json['content']['application/json'];
+
+				let address = response_attributes['address']['schema']['value'];
+				let msToken = response_attributes['msToken']['schema']['value'];
+
+				displaySubwindowGET_(address, msToken);
+
+			} else if (response.status == 401) {
+
+				alert("You need to be authenticated in an identity provoder to derive an ID. Please, try to retrieve an identity first.")
+
+			} else {
+
+				alert("Uncontrolled error!?")
+
+			}
+
+		}
+
+		async function LinkSelector(agent){
+
+			// Retrieve identities from API.
+			const url = ENDPOINT + "/api/v1/identity/all/list";
+
+			const response = await fetch(url, {method: 'POST', credentials: 'include'})
+			
+			if (response.status == 200) {
+
+				const response_json = await response.json();
+
+				let response_attributes = response_json['content']['application/json'];
+
+				let identities = response_attributes['identities']['schema']['value'];
+
+				if (identities.uniqueProviders.length > 0) {
+
+					fillSelector_(identities, agent);
+
+				} else {
+
+					alert("You need to have at least one identity to perform a link with it. Please, try to retrieve an ID first.");
+
+				}
+				
+			
+			} else if (response.status == 401) {
+
+				alert("Your session have been expired, you will be redirected to a new one.")
+				location.reload()
+
+			} else {
+
+				alert("Uncontrolled error!?")
+
+			}
+
+		}
+
+		async function linkID(agent) {
+			//alert("LinkID with agent: " + agent);
+
+			const url = ENDPOINT + "/api/v1/identity/link";
+
+			let data = new FormData()
+			data.append("moduleID", agent);
+
+			let identityIDa = document.getElementById('datasetIDa').value
+			let identityIDb = document.getElementById('datasetIDb').value
+
+			data.append("identityIDa", identityIDa);
+			data.append("identityIDb", identityIDb);
+
+			const response = await fetch(url, {method: 'POST', credentials: 'include', body: data})
+			
+			if (response.status == 200) {
+
+				const response_json = await response.json();
+
+
+				let response_attributes = response_json['content']['application/json'];
+
+				let address = response_attributes['address']['schema']['value'];
+				let msToken = response_attributes['msToken']['schema']['value'];
+
+				displaySubwindowPOST_(address, msToken);
+				popupClosingAction();
+			
+			} else if (response.status == 401) {
+
+				alert("Your session have been expired, you will be redirected to a new one.")
+				location.reload()
+
+			} else {
+
+				alert("Uncontrolled error!?")
+
+			}
+
+		}
+
+		async function linkResult(agent, identityID){
+			//alert("Link result function status: (agent=" + agent +", id=" + identityID + ") -> not implemented yet");
+
+			const url = ENDPOINT + "/api/v1/identity/link/result";
+
+			let data = new FormData()
+			data.append("moduleID", agent);
+
+			data.append("identityID", identityID);
+
+			const response = await fetch(url, {method: 'POST', credentials: 'include', body: data})
+			
+			if (response.status == 200) {
+
+				const response_json = await response.json();
+
+
+				let response_attributes = response_json['content']['application/json'];
+
+				let address = response_attributes['address']['schema']['value'];
+				let msToken = response_attributes['msToken']['schema']['value'];
+
+				alert("The result of this action may create a new linkedID only in case this request is approved. The request will be deleted after processed.")
+
+				displaySubwindowPOST_(address, msToken);
+				popupClosingAction();
+			
+			} else if (response.status == 401) {
+
+				alert("Your session have been expired, you will be redirected to a new one.")
+				location.reload()
+
+			} else {
+
+				alert("Uncontrolled error!?")
+
+			}
+
+		}
+
+		// -------------------------------------------------------------------------------------------------------------------- Old 
+
+
+		function validateFlag(url) {
+
+			if (window.currentWindow.closed) {
+				window.clearInterval(window.globalInterval)
+				window.clearInterval(window.watchDogInterval)
+			}
+
+			urlTokenFlag = 'tokenFlag=' + sessionStorage.getItem('data');
+
+			var xmlHttp = new XMLHttpRequest();
+
+			xmlHttp.onreadystatechange = function() {
+
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 206) {
+					console.log('vF-001');
+
+				} else if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+					console.log('vF-002');
+					window.clearInterval(window.globalInterval);
+					window.clearInterval(window.watchDogInterval)
+					window.currentWindow.close();
+					location.href = url;
+
+				} else if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
+					console.log('vF-003');
+					window.clearInterval(window.globalInterval);
+					window.clearInterval(window.watchDogInterval)
+					window.currentWindow.close();
+
+					if (xmlHttp.responseText == 'ERROR') {
+						console.log('vF-003-1');
+						location.reload(true);
+					} else {
+						console.log('vF-003-2');
+					}					
+					
+				} else if (xmlHttp.readyState == 4 && xmlHttp.status == 500) {
+					console.log('vF-004');
+					window.clearInterval(window.globalInterval);
+					window.clearInterval(window.watchDogInterval)
+					window.currentWindow.close();
+					alert('An internal server error has been occurred. You are about to be redirected to the login page')
+					window.location = '{{seal_endpoint}}';
+					
+				}	
+
+			}	// onreadystatechange
+
+			xmlHttp.open("GET", urlTokenFlag, true); // true for asynchronous
+			xmlHttp.send();
+
+		}	// function validateFlag
+		
+
+
+
+	</script>
+{% endblock %}

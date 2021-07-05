@@ -275,60 +275,64 @@ def tokenControl(request, UUID):
         print('POST: ', request.POST)
         print('GET: ', request.GET)
 
-    if request.POST.get('msToken', None):
+    #if request.POST.get('msToken', None):
+    if request.POST:
 
-        try:
-            token = request.POST.get('msToken')
-            r = Cl_token().validate(token, _recuperarSession(UUID).sessionID)
+        return HttpResponseRedirect('https://seal.uma.es/dashboard/tokenValidate='+UUID)
 
-            assert(r.status_code == 200)
-            result = jwt.decode(token, verify=False)
+        # try:
+        #     token = request.POST.get('msToken')
+        #     r = Cl_token().validate(token, _recuperarSession(UUID).sessionID)
 
-            assert(result.get('sessionId') ==
-                   _recuperarSession(UUID).sessionID)
+        #     assert(r.status_code == 200)
+        #     result = jwt.decode(token, verify=False)
 
-            try:
+        #     assert(result.get('sessionId') ==
+        #            _recuperarSession(UUID).sessionID)
 
-                result_data = json.loads(
-                    result.get('data').replace(
-                        'null', "\"null\""))
-                result.update({'data': result_data})
+        #     try:
 
-                if result.get('data').get('code') == 'OK':
-                    # Everything's OK!
-                    assert(_crearTokenFlag(UUID, result))
+        #         result_data = json.loads(
+        #             result.get('data').replace(
+        #                 'null', "\"null\""))
+        #         result.update({'data': result_data})
 
-                elif result.get('data').get('code') == 'ERROR':
-                    # Something went wrong...
-                    assert(_crearTokenFlag(UUID, result))
+        #         if result.get('data').get('code') == 'OK':
+        #             # Everything's OK!
+        #             assert(_crearTokenFlag(UUID, result))
 
-                else:
-                    raise Exception
-            except BaseException:
-                # Mockup of the result sessionMngrResponse object
-                if (Settings.DEBUG):
-                    print('DEBUG: Mocking the callback object within msToken')
+        #         elif result.get('data').get('code') == 'ERROR':
+        #             # Something went wrong...
+        #             assert(_crearTokenFlag(UUID, result))
 
-                # *********************
-                result = {
-                    'data': {
-                        'code': 'OK',
-                        'additionalData': 'msToken received, but no data field found. MOCKED!'}}
-                # *********************
-                assert(_crearTokenFlag(UUID, result))
+        #         else:
+        #             raise Exception
+        #     except BaseException:
+        #         # Mockup of the result sessionMngrResponse object
+        #         if (Settings.DEBUG):
+        #             print('DEBUG: Mocking the callback object within msToken')
 
-            #return HttpResponse(status=200)
-            return render(request,
-                  'umadashboard/callback.html',
-                  {'result': 200,})
+        #         # *********************
+        #         result = {
+        #             'data': {
+        #                 'code': 'OK',
+        #                 'additionalData': 'msToken received, but no data field found. MOCKED!'}}
+        #         # *********************
+        #         assert(_crearTokenFlag(UUID, result))
 
-        except BaseException:
-            print('ERROR-tC-001: Error token validation exception')
-            # TO-DO: Return a FAILURE html
-            #return HttpResponse(status=404)
-            return render(request,
-                  'umadashboard/callback.html',
-                  {'result': 404,})
+        #     #return HttpResponse(status=200)
+
+        #     return render(request,
+        #           'umadashboard/callback.html',
+        #           {'result': 200,})
+
+        # except BaseException:
+        #     print('ERROR-tC-001: Error token validation exception')
+        #     # TO-DO: Return a FAILURE html
+        #     #return HttpResponse(status=404)
+        #     return render(request,
+        #           'umadashboard/callback.html',
+        #           {'result': 404,})
 
     else:
         try:
